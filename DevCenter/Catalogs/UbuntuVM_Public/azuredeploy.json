@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "virtualMachineName": {
-            "defaultValue": "UbuntuVM",
+            "defaultValue": "UbuntuVMA",
             "type": "String"
         },
         "SSH-PublicKey": {
