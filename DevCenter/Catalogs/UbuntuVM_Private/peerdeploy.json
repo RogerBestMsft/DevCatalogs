@@ -21,7 +21,7 @@
                 "peeringState": "Connected",
                 "peeringSyncLevel": "FullyInSync",
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('environment_VNet_Name'))]"
+                    "id": "[parameters('environment_VNet_Name')]"
                 },
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": true,
