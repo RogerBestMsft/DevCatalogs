@@ -20,7 +20,10 @@
         "vm_VNet_Name": "[concat(parameters('virtualMachineName'), '_vnet')]",
         "vm_Nic_Name": "[concat(toLower(parameters('virtualMachineName')), '_nic')]",
         "vm_Nsg_Name": "[concat(parameters('virtualMachineName'), '_nsg') ]",
-        "peer_VNet_Name": "AdatumCorpNetwork"
+        "vm_VNet_Peer_Name": "[concat(variables('vm_VNet_Name'), '/', variables('peer_Name'))]",
+        "peer_VNet_Name": "AdatumCorpNetwork",
+        "peer_RG_Name": "DevBox_Network",
+        "peer_Name": "PeerAlpha"
     },
     "resources": [
         {
@@ -170,9 +173,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2022-05-01",
-            "name": "[concat(variables('vm_VNet_Name'), '/PeerAlpha')]",
+            "name": "[variables('vm_VNet_Peer_Name')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]"                
             ],
             "properties": {
                 "peeringState": "Connected",
@@ -201,22 +204,65 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
             "name": "nestedPeering",
+            "resourceGroup": "[variables('peer_RG_Name')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]"                
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', variables('vm_VNet_Name'), variables('Peer_Name'))]"
             ],
-
             "properties": {
                 "mode": "Incremental",
-                "templateLink": {
-                    "relativePath": "peerdeploy.json"
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
                 },
                 "parameters": {
-                    "devBox_VNet_Name":{
+                    "devBox_VNet_Name": {
                         "value": "[variables('peer_VNet_Name')]"
                     },
                     "environment_VNet_Name": {
                         "value": "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]"
                     }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "devBox_VNet_Name":{
+                            "type": "string"
+                        },
+                        "environment_VNet_Name": {
+                            "type": "string"
+                        }
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                            "apiVersion": "2022-05-01",
+                            "name": "[concat(parameters('devBox_VNet_Name'), '/PeerBravo')]",
+                            "dependsOn": [],
+                            "properties": {
+                                "peeringState": "Connected",
+                                "peeringSyncLevel": "FullyInSync",
+                                "remoteVirtualNetwork": {
+                                    "id": "[parameters('environment_VNet_Name')]"
+                                },
+                                "allowVirtualNetworkAccess": true,
+                                "allowForwardedTraffic": true,
+                                "allowGatewayTransit": false,
+                                "useRemoteGateways": false,
+                                "doNotVerifyRemoteGateways": false,
+                                "remoteAddressSpace": {
+                                    "addressPrefixes": [
+                                        "10.1.0.0/16"
+                                    ]
+                                },
+                                "remoteVirtualNetworkAddressSpace": {
+                                    "addressPrefixes": [
+                                        "10.1.0.0/16"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         },
