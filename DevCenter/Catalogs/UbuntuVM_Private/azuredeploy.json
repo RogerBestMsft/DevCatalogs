@@ -23,7 +23,7 @@
         "vm_VNet_Peer_Name": "[concat(variables('vm_VNet_Name'), '/', variables('peer_Name'))]",
         "peer_VNet_Name": "AdatumCorpNetwork",
         "peer_RG_Name": "DevBox_Network",
-        "peer_Name": "PeerAlpha"
+        "peer_Name": "PeerBAlpha"
     },
     "resources": [
         {
@@ -237,7 +237,7 @@
                         {
                             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
                             "apiVersion": "2022-05-01",
-                            "name": "[concat(parameters('devBox_VNet_Name'), '/PeerBravo')]",
+                            "name": "[concat(parameters('devBox_VNet_Name'), '/PeerCBravo')]",
                             "dependsOn": [],
                             "properties": {
                                 "peeringState": "Connected",
