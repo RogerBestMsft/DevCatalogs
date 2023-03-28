@@ -3,7 +3,8 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "name": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "rbesta"
         },
         "location": {
             "type": "string",
@@ -50,10 +51,12 @@
             "defaultValue": "https://mcr.microsoft.com"
         },
         "dockerRegistryUsername": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "rbest"
         },
         "dockerRegistryPassword": {
-            "type": "securestring"
+            "type": "securestring",
+            "defaultValue": "ode#1ode1234"
         },
         "dockerRegistryStartupCommand": {
             "type": "string",
