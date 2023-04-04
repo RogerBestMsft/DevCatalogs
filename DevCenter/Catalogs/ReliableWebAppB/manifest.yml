@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: ReliableWebApp
+version: 1.0.0
+summary: Reliable Web app reference
+description: Deploys a reference reliable web app
+runner: ARM
+templatePath: azuredeploy.json
+
+parameters:
+  - id: name
+    name: Name
+    description: 'Name of the environment.'
+    type: string
+    required: true
+
+  - id: azureSqlPassword
+    name: 'SQL Server Password'
+    description: 'SQL Server Password.'
+    type: securestring
+
+  - id: azureAdClientSecretForFrontEnd
+    name: 'Front End client secret'
+    description: 'Front end secret.'
+    type: securestring
+    
+  - id: principalId
+    name: 'Principal ID'
+    description: 'User ID'
+    type: securestring
+    
