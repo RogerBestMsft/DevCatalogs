@@ -4,7 +4,7 @@ version: 1.0.0
 summary: Reliable Web app reference
 description: Deploys a reference reliable web app
 runner: ARM
-templatePath: azuredeploy.json
+templatePath: main.json
 
 parameters:
   - id: name
