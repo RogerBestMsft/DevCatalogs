@@ -5,7 +5,6 @@ summary: Reliable Web app reference
 description: Deploys a reference reliable web app
 runner: ARM
 templatePath: azuredeploy.json
-
 parameters:
   - id: name
     name: Name
