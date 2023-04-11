@@ -13,13 +13,16 @@ parameters:
     required: true
   - id: "azureSqlPassword"
     name: "SQL Server Password"
-    description: "SQL Server Password.""
-    type: "securestring"
+    description: "SQL Server Password."
+    type: "string"
+    required: true
   - id: "azureAdClientSecretForFrontEnd"
     name: "Front End client secret"
-    description: "Front end secret.""
-    type: "securestring"
+    description: "Front end secret."
+    type: "string"
+    required: true
   - id: "principalId"
     name: "Principal ID"
     description: "User ID"
-    type: "securestring"
+    type: "string"
+    required: true
