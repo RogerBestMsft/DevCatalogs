@@ -6,24 +6,20 @@ description: Deploys a reference reliable web app
 runner: ARM
 templatePath: azuredeploy.json
 parameters:
-  - id: name
-    name: Name
-    description: 'Name of the environment.'
-    type: string
+  - id: "name"
+    name: "Name"
+    description: "Name of the environment."
+    type: "string"
     required: true
-
-  - id: azureSqlPassword
-    name: 'SQL Server Password'
-    description: 'SQL Server Password.'
-    type: securestring
-
-  - id: azureAdClientSecretForFrontEnd
-    name: 'Front End client secret'
-    description: 'Front end secret.'
-    type: securestring
-    
-  - id: principalId
-    name: 'Principal ID'
-    description: 'User ID'
-    type: securestring
-    
+  - id: "azureSqlPassword"
+    name: "SQL Server Password"
+    description: "SQL Server Password.""
+    type: "securestring"
+  - id: "azureAdClientSecretForFrontEnd"
+    name: "Front End client secret"
+    description: "Front end secret.""
+    type: "securestring"
+  - id: "principalId"
+    name: "Principal ID"
+    description: "User ID"
+    type: "securestring"
