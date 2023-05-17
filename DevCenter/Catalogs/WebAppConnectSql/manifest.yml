@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: WebAppConnectSQL
+version: 1.0.0
+summary: Web App with SQL connection
+description: Deploys a web app with Azure SQL
+runner: ARM
+templatePath: azuredeploy.json
