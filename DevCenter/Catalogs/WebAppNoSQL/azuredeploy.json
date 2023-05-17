@@ -67,7 +67,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2022-11-01",
-            "name": "[concat(parameters('vnet_name'), '/alpharbestAppSubnet')]",
+            "name": "[concat(parameters('vnet_name'), '/', variables('subnetBravo'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_name'))]"
             ],
@@ -259,25 +259,13 @@
             "name": "[parameters('privateEndpoint_name')]",
             "location": "eastus",
             "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', parameters('server_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), variables('subnetAlpha'))]"
             ],
             "properties": {
                 "privateLinkServiceConnections": [
                     {
                         "name": "[parameters('privateEndpoint_name')]",
-                        "id": "[concat(resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpoint_name')), concat('/privateLinkServiceConnections/', parameters('privateEndpoint_name')))]",
-                        "properties": {
-                            "privateLinkServiceId": "[resourceId('Microsoft.Sql/servers', parameters('server_name'))]",
-                            "groupIds": [
-                                "sqlServer"
-                            ],
-                            "privateLinkServiceConnectionState": {
-                                "status": "Approved",
-                                "description": "Auto-approved",
-                                "actionsRequired": "None"
-                            }
-                        }
+                        "id": "[concat(resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpoint_name')), concat('/privateLinkServiceConnections/', parameters('privateEndpoint_name')))]"                        
                     }
                 ],
                 "manualPrivateLinkServiceConnections": [],
@@ -312,10 +300,7 @@
             "apiVersion": "2022-11-01",
             "name": "[parameters('vnet_name')]",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), variables('subnetAlpha'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), variables('subnetBravo'))]"
-            ],
+            "dependsOn": [],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -360,7 +345,33 @@
                 "virtualNetworkPeerings": [],
                 "enableDdosProtection": false
             }
-        },        
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('serverfarm_name')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "P1v2",
+                "tier": "PremiumV2",
+                "size": "P1v2",
+                "family": "Pv2",
+                "capacity": 1
+            },
+            "kind": "linux",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2022-09-01",
@@ -412,14 +423,14 @@
                 "httpsOnly": false,
                 "redundancyMode": "None",
                 "storageAccountRequired": false,
-                "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), concat(parameters('site_name'), 'AppSubnet'))]",
+                "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), concat(parameters('site_name'), variables('subnetBravo')))]",
                 "keyVaultReferenceIdentity": "SystemAssigned"
             }
         },
         {
             "type": "Microsoft.Web/sites/virtualNetworkConnections",
             "apiVersion": "2022-09-01",
-            "name": "[concat(parameters('site_name'), '/123121212_', parameters('site_name'), 'AppSubnet')]",
+            "name": "[concat(parameters('site_name'), '/123121212_', parameters('site_name'), variables('subnetBravo'))]",
             "location": "East US",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('site_name'))]",
