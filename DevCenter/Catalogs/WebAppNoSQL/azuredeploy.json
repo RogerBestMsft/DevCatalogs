@@ -419,7 +419,7 @@
         {
             "type": "Microsoft.Web/sites/virtualNetworkConnections",
             "apiVersion": "2022-09-01",
-            "name": "[concat(parameters('site_name'), '/', newGuid() ,'_', parameters('site_name'), 'AppSubnet')]",
+            "name": "[concat(parameters('site_name'), '/123121212_', parameters('site_name'), 'AppSubnet')]",
             "location": "East US",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('site_name'))]",
