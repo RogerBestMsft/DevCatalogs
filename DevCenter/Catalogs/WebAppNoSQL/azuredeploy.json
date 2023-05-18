@@ -23,11 +23,11 @@
             "type": "String"
         },
         "privateDnsZone_name": {
-            "defaultValue": "privatelink.database.windows.net",
+            "defaultValue": "privatelink.bravo.database.windows.net",
             "type": "String"
         },
         "privateDnsZone_redis_name": {
-            "defaultValue": "privatelink.redis.cache.windows.net",
+            "defaultValue": "privatelink.bravo.redis.cache.windows.net",
             "type": "String"
         }
     },
@@ -254,48 +254,6 @@
             }
         },
         {
-            "type": "Microsoft.Network/privateEndpoints",
-            "apiVersion": "2022-11-01",
-            "name": "[parameters('privateEndpoint_name')]",
-            "location": "eastus",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), variables('subnetAlpha'))]"
-            ],
-            "properties": {
-                "privateLinkServiceConnections": [
-                    {
-                        "name": "[parameters('privateEndpoint_name')]",
-                        "id": "[concat(resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpoint_name')), concat('/privateLinkServiceConnections/', parameters('privateEndpoint_name')))]"                        
-                    }
-                ],
-                "manualPrivateLinkServiceConnections": [],
-                "subnet": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), variables('subnetAlpha'))]"
-                },
-                "ipConfigurations": [],
-                "customDnsConfigs": []
-            }
-        },
-        {
-            "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-            "apiVersion": "2022-11-01",
-            "name": "[concat(parameters('privateEndpoint_name'), '/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpoint_name'))]",
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZone_name'))]"
-            ],
-            "properties": {
-                "privateDnsZoneConfigs": [
-                    {
-                        "name": "database-config",
-                        "properties": {
-                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZone_name'))]"
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2022-11-01",
             "name": "[parameters('vnet_name')]",
@@ -423,7 +381,7 @@
                 "httpsOnly": false,
                 "redundancyMode": "None",
                 "storageAccountRequired": false,
-                "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), concat(parameters('site_name'), variables('subnetBravo')))]",
+                "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnet_name'), variables('subnetBravo'))]",
                 "keyVaultReferenceIdentity": "SystemAssigned"
             }
         },
