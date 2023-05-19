@@ -31,7 +31,7 @@
             "type": "String"
         },
         "sqlServerId": {
-            "defaultValue": "/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/privateSQL/providers/Microsoft.Sql/servers/privaterbestsql",
+            "defaultValue": "/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/privateSQL/providers/Microsoft.Sql/servers/privaterbestsqla",
             "type": "string"
         }
     },
@@ -511,6 +511,70 @@
                     }
                 ]
             }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "dbendpointnic",
+            "resourceGroup": "privateSQL",
+            "properties": {
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                },
+                "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                },
+                "resources": [
+                    {
+						"type": "Microsoft.Sql/servers",
+						"apiVersion": "2022-08-01-preview",
+						"name": "privaterbestsqla",
+						"location": "eastus",
+						"kind": "v12.0",
+						"properties": {
+							"administratorLogin": "rbest",
+							"version": "12.0",
+							"minimalTlsVersion": "1.2",
+							"publicNetworkAccess": "Enabled",
+							"administrators": {
+								"administratorType": "ActiveDirectory",
+								"principalType": "User",
+								"login": "rbest@ddcet.onmicrosoft.com",
+								"sid": "c8307c6a-8539-4540-8e45-e8fa520fd93c",
+								"tenantId": "ec509c4c-6b8f-4558-a7b7-030ff99b57e0",
+								"azureADOnlyAuthentication": false
+							},
+							"restrictOutboundNetworkAccess": "Disabled"
+						}
+					},
+                    {
+						"type": "Microsoft.Sql/servers/privateEndpointConnections",
+						"apiVersion": "2022-08-01-preview",
+						"name": "[concat('privaterbestsqla', '/bravorbestDbEndpoint-8358a948-0c91-4865-be92-0260bd26fbde')]",
+						"dependsOn": [
+							"/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/privateSQL/providers/Microsoft.Sql/servers/privaterbestsqla"
+						],
+						"properties": {
+							"privateEndpoint": {
+								"id": "/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/TestRG/providers/Microsoft.Network/privateEndpoints/bravorbestDbEndpoint"
+							},
+							"privateLinkServiceConnectionState": {
+								"status": "Approved",
+								"description": "Auto-approved"
+							}
+						}
+					}
+
+                ]
+                }
+            },
+            "dependsOn": [
+            ]
         }
     ]
 }
