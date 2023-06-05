@@ -19,5 +19,5 @@ parameters:
   - id: "sqlServerAdministratorPassword"
     name: "sqlServerAdministratorPassword"
     description: "SQL Server Administrator Password."
-    type: "string"
-    required: true  
+    type: "securestring"
+    required: true
