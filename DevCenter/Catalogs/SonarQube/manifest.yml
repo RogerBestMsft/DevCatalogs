@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
-name: TFSonarQube
+name: SonarQube
 version: 1.0.0
-summary: TFSonarQube
-description: TFSonarQube
+summary: SonarQube
+description: SonarQube
 runner: ARM
 templatePath: azuredeploy.json
 parameters:
@@ -19,5 +19,5 @@ parameters:
   - id: "sqlServerAdministratorPassword"
     name: "sqlServerAdministratorPassword"
     description: "SQL Server Administrator Password."
-    type: "securestring"
+    type: "string"
     required: true
