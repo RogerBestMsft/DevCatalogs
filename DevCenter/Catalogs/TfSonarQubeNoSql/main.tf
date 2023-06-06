@@ -45,12 +45,15 @@ resource "azurerm_linux_web_app" "webapp" {
   site_config { 
     minimum_tls_version = "1.2"
     always_on      = "true"
+    managed_pipeline_mode = "Integrated"
     application_stack {
-      docker_image     = "docker:sonarqube"
-      docker_image_tag = "community"
+      
+      docker_image     = "sonarqube"
+      docker_image_tag = "7.7-community"
     }
   }
   app_settings = {
+    "DOCKER_ENABLE_CI" : true,
     "SONARQUBE_JDBC_URL": "jdbc:sqlserver://deltarbest-sql.database.windows.net:1433;database=sonarqube;user=roger@deltarbest-sql;password=${var.sqlServerAdministratorPassword};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;",
     "SONARQUBE_JDBC_USERNAME": var.sqlServerAdministratorUsername,
     "SONARQUBE_JDBC_PASSWORD": var.sqlServerAdministratorPassword,
