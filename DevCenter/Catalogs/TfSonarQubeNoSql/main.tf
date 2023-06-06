@@ -46,7 +46,7 @@ resource "azurerm_linux_web_app" "webapp" {
     minimum_tls_version = "1.2"
     always_on      = "true"
     application_stack {
-      docker_image     = "DOCKER:sonarqube"
+      docker_image     = "docker:sonarqube"
       docker_image_tag = "community"
     }
   }
