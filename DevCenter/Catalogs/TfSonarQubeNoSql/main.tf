@@ -46,8 +46,8 @@ resource "azurerm_linux_web_app" "webapp" {
     minimum_tls_version = "1.2"
   }
   app_settings = {
-    "SONARQUBE_JDBC_URL":"jdbc:sqlserver://deltarbest-sql.database.windows.net:1433;database=sonarqube;user=roger@deltarbest-sql;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30jdbc:sqlserver://deltarbest-sql.database.windows.net:1433;database=sonarqube;user=roger@deltarbest-sql;password=" + var.sqlServerAdministratorPassword + ";encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;",
-    "SONARQUBE_JDBC_USERNAME": var.qlServerAdministratorUsername,
+    "SONARQUBE_JDBC_URL": "jdbc:sqlserver://deltarbest-sql.database.windows.net:1433;database=sonarqube;user=roger@deltarbest-sql;password=%s;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30jdbc:sqlserver://deltarbest-sql.database.windows.net:1433;database=sonarqube;user=roger@deltarbest-sql;password=${var.sqlServerAdministratorPassword};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;",
+    "SONARQUBE_JDBC_USERNAME": var.sqlServerAdministratorUsername,
     "SONARQUBE_JDBC_PASSWORD": var.sqlServerAdministratorPassword,
     "sonar.path.data": "/home/sonarqube/data"
   }
