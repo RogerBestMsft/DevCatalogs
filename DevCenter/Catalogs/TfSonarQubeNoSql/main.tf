@@ -44,7 +44,11 @@ resource "azurerm_linux_web_app" "webapp" {
   https_only            = true
   site_config { 
     minimum_tls_version = "1.2"
-    linux_fx_version = "DOCKER|sonarqube:7.7-community"
+    always_on      = "true"
+    application_stack {
+      docker_image     = "DOCKER:sonarqube"
+      docker_image_tag = "community"
+    }
   }
   app_settings = {
     "SONARQUBE_JDBC_URL": "jdbc:sqlserver://deltarbest-sql.database.windows.net:1433;database=sonarqube;user=roger@deltarbest-sql;password=${var.sqlServerAdministratorPassword};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;",
