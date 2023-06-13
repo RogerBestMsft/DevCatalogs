@@ -2,7 +2,7 @@ provider "azurerm" {
   features {}
 }
 
-data "azurerm_resource_group" "rg" {
+data "azurerm_resource_group" "sqlrg" {
   name     = var.resource_group_name
 }
 
@@ -22,64 +22,45 @@ data "azurerm_subnet" "rbest-sql-subnet" {
   resource_group_name  = data.azurerm_virtual_network.rbest-vnet.resource_group_name
 }
 
-# Create a Private DNS Zone
-resource "azurerm_private_dns_zone" "rbest-private-dns" {
-  name = "rbestprivatedns.lan"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  
-}
-# Link the Private DNS Zone with the VNET
-resource "azurerm_private_dns_zone_virtual_network_link" "rbest-private-dns-link" {
-  name = "rbest-vnet"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.rbest-private-dns.name
-  virtual_network_id = data.azurerm_virtual_network.rbest-vnet.id
-}
 # Create a DB Private DNS Zone
 resource "azurerm_private_dns_zone" "rbest-endpoint-dns-private-zone" {
-    #name = "rbestcharlie.zzz"
-    name = "${azurerm_private_dns_zone_virtual_network_link.rbest-private-dns-link.name}.database.windows.net"
-    #name = "privatelink.data.windows.net"
-    resource_group_name = data.azurerm_resource_group.rg.name  
+    #name = "${azurerm_private_dns_zone_virtual_network_link.rbest-endpoint-dns-link.name}.database.windows.net"
+    name = "privatelink.database.windows.net"
+    resource_group_name = data.azurerm_resource_group.sqlrg.name  
 }
 
-# sql private
-# Create a DB Private Endpoint
-resource "azurerm_private_endpoint" "rbest-db-endpoint" {
-  depends_on = [azurerm_mssql_server.rbest-sql-server]
-  name = "rbest-sql-db-endpoint"
-  location = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
-  subnet_id = data.azurerm_subnet.rbest-sql-subnet.id
-  private_service_connection {
-    name = "rbest-sql-db-endpoint"
-    is_manual_connection = "false"
-    private_connection_resource_id = azurerm_mssql_server.rbest-sql-server.id
-    subresource_names = ["sqlServer"]
-  }
+# Link the Private DNS Zone with the VNET
+resource "azurerm_private_dns_zone_virtual_network_link" "rbest-endpoint-dns-link" {
+  name = "rbest-vnet"
+  resource_group_name = data.azurerm_resource_group.sqlrg.name
+  private_dns_zone_name = azurerm_private_dns_zone.rbest-endpoint-dns-private-zone.name
+  virtual_network_id = data.azurerm_virtual_network.rbest-vnet.id
 }
+
 # DB Private Endpoint Connecton
 data "azurerm_private_endpoint_connection" "rbest-endpoint-connection" {
   depends_on = [azurerm_private_endpoint.rbest-db-endpoint]
   name = azurerm_private_endpoint.rbest-db-endpoint.name
-  resource_group_name = data.azurerm_resource_group.rg.name
+  resource_group_name = data.azurerm_resource_group.sqlrg.name
 }
+
 # Create a DB Private DNS A Record
-resource "azurerm_private_dns_a_record" "rbest-endpoint-dns-a-record" {
-  depends_on = [azurerm_mssql_server.rbest-sql-server]
-  name = lower(azurerm_mssql_server.rbest-sql-server.name)
-  zone_name = azurerm_private_dns_zone.rbest-endpoint-dns-private-zone.name
-  resource_group_name = data.azurerm_resource_group.rg.name
-  ttl = 300
-  records = [data.azurerm_private_endpoint_connection.rbest-endpoint-connection.private_service_connection.0.private_ip_address]
-}
-# Create a Private DNS to VNET link
-resource "azurerm_private_dns_zone_virtual_network_link" "dns-zone-to-vnet-link" {
-  name = "rbest-sql-db-vnet-link"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.rbest-endpoint-dns-private-zone.name  
-  virtual_network_id = data.azurerm_virtual_network.rbest-vnet.id
-}
+# resource "azurerm_private_dns_a_record" "rbest-endpoint-dns-a-record" {
+#   depends_on = [azurerm_mssql_server.rbest-sql-server]
+#   name = lower(azurerm_mssql_server.rbest-sql-server.name)
+#   zone_name = azurerm_private_dns_zone.rbest-endpoint-dns-private-zone.name
+#   resource_group_name = data.azurerm_resource_group.sqlrg.name
+#   ttl = 300
+#   records = [data.azurerm_private_endpoint_connection.rbest-endpoint-connection.private_service_connection.0.private_ip_address]
+# }
+
+# # Create a Private DNS to VNET link
+# resource "azurerm_private_dns_zone_virtual_network_link" "dns-zone-to-vnet-link" {
+#   name = "rbest-sql-db-vnet-link"
+#   resource_group_name = data.azurerm_resource_group.vnetrg.name
+#   private_dns_zone_name = azurerm_private_dns_zone.rbest-endpoint-dns-private-zone.name  
+#   virtual_network_id = data.azurerm_virtual_network.rbest-vnet.id
+# }
 
 # resource "random_password" "admin_password" {
 #   count       = var.admin_password == null ? 1 : 0
@@ -97,8 +78,8 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns-zone-to-vnet-link"
 
 resource "azurerm_mssql_server" "rbest-sql-server" {
   name                         = "rbestsqlserver"
-  resource_group_name          = data.azurerm_resource_group.rg.name
-  location                     = data.azurerm_resource_group.rg.location
+  resource_group_name          = data.azurerm_resource_group.sqlrg.name
+  location                     = data.azurerm_resource_group.sqlrg.location
   administrator_login          = var.admin_username
   administrator_login_password = var.admin_password
   version                      = "12.0"
@@ -112,4 +93,26 @@ resource "azurerm_mssql_database" "db" {
   collation = "Latin1_General_CI_AS"
   zone_redundant = false
   read_scale = false
+}
+
+# Create a DB Private Endpoint
+resource "azurerm_private_endpoint" "rbest-db-endpoint" {
+  depends_on = [
+    azurerm_mssql_server.rbest-sql-server,
+    azurerm_private_dns_zone.rbest-endpoint-dns-private-zone
+    ]
+  name = "rbest-sql-db-endpoint"
+  location = data.azurerm_resource_group.sqlrg.location
+  resource_group_name = data.azurerm_resource_group.sqlrg.name
+  subnet_id = data.azurerm_subnet.rbest-sql-subnet.id
+  private_service_connection {
+    name = "rbest-sql-db-endpoint"
+    is_manual_connection = "false"
+    private_connection_resource_id = azurerm_mssql_server.rbest-sql-server.id
+    subresource_names = ["sqlServer"]
+  }
+  private_dns_zone_group {
+    name                 = azurerm_private_dns_zone.rbest-endpoint-dns-private-zone.name
+    private_dns_zone_ids = [azurerm_private_dns_zone.rbest-endpoint-dns-private-zone.id]
+  }
 }

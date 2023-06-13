@@ -1,5 +1,5 @@
 output "resource_group_name" {
-  value = data.azurerm_resource_group.rg.name
+  value = data.azurerm_resource_group.sqlrg.name
 }
 
 output "sql_server_name" {
