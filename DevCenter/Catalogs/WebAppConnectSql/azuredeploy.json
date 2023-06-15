@@ -378,46 +378,7 @@
                     "serialNumber": 1
                 }
             }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2022-11-01",
-            "name": "[concat(variables('vnetName'), '/', variables('appsubnetName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
-            ],
-            "properties": {
-                "addressPrefix": "10.0.2.0/24",
-                "serviceEndpoints": [],
-                "delegations": [
-                    {
-                        "name": "dlg-appServices",
-                        "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('appsubnetName')), '/delegations/dlg-appServices')]",
-                        "properties": {
-                            "serviceName": "Microsoft.Web/serverfarms"
-                        },
-                        "type": "Microsoft.Network/virtualNetworks/subnets/delegations"
-                    }
-                ],
-                "privateEndpointNetworkPolicies": "Disabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2022-11-01",
-            "name": "[concat(variables('vnetName'), '/', variables('appsubnetName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
-            ],
-            "properties": {
-                "addressPrefix": "10.0.0.0/24",
-                "serviceEndpoints": [],
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Disabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
+        },        
         {
             "type": "Microsoft.Sql/servers/advancedThreatProtectionSettings",
             "apiVersion": "2022-08-01-preview",
