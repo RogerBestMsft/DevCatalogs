@@ -5,3 +5,9 @@ summary: Web App with SQL connection
 description: Deploys a web app with Azure SQL
 runner: ARM
 templatePath: azuredeploy.json
+parameters:
+  - id: "sqlServerAdminPassword"
+    name: "sqlServerAdminPassword"
+    description: "SQL Server Administrator Password."
+    type: "string"
+    required: true
