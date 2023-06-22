@@ -25,7 +25,7 @@ data "azurerm_app_configuration_key" "Settings_ProjectNetworkId" {
 data "azurerm_app_configuration_key" "Settings_EnvironmentNetworkId" {
   configuration_store_id = data.azurerm_resource_group.Environment.tags["hidden-ConfigurationStoreId"]
   key                    = "EnvironmentNetworkId"
-  label                  = data.azurerm_resource_group.Environment.tags["EnvironmentType"]
+#  label                  = data.azurerm_resource_group.Environment.tags["EnvironmentType"]
 }
 
 data "external" "DNSZoneDatabase" {
