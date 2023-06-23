@@ -142,40 +142,40 @@ resource "azurerm_mssql_database" "SonarQube" {
 	auto_pause_delay_in_minutes 	= 60
 }
 
-resource "azuread_application" "SonarQube" {
-	display_name 					= "${data.azurerm_resource_group.Environment.name}-${azurerm_linux_web_app.SonarQube.default_hostname}"
-	identifier_uris  				= [ "api://${data.azurerm_resource_group.Environment.name}-${azurerm_linux_web_app.SonarQube.default_hostname}" ]
-	owners 							= [ data.azuread_client_config.Current.object_id ]
-	sign_in_audience 				= "AzureADMyOrg"
+# resource "azuread_application" "SonarQube" {
+# 	display_name 					= "${data.azurerm_resource_group.Environment.name}-${azurerm_linux_web_app.SonarQube.default_hostname}"
+# 	identifier_uris  				= [ "api://${data.azurerm_resource_group.Environment.name}-${azurerm_linux_web_app.SonarQube.default_hostname}" ]
+# 	owners 							= [ data.azuread_client_config.Current.object_id ]
+# 	sign_in_audience 				= "AzureADMyOrg"
 
-	web {
-		homepage_url  = "https://${azurerm_linux_web_app.SonarQube.default_hostname}"
-		redirect_uris = ["https://${azurerm_linux_web_app.SonarQube.default_hostname}/oauth2/callback/aad"]
-	}
+# 	web {
+# 		homepage_url  = "https://${azurerm_linux_web_app.SonarQube.default_hostname}"
+# 		redirect_uris = ["https://${azurerm_linux_web_app.SonarQube.default_hostname}/oauth2/callback/aad"]
+# 	}
 	
-	required_resource_access {
-		resource_app_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+# 	required_resource_access {
+# 		resource_app_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
 
-		resource_access {
-			id   = data.azuread_service_principal.MSGraph.oauth2_permission_scope_ids["User.Read"]
-			type = "Scope"
-		}
+# 		resource_access {
+# 			id   = data.azuread_service_principal.MSGraph.oauth2_permission_scope_ids["User.Read"]
+# 			type = "Scope"
+# 		}
 
-		resource_access {
-			id   = data.azuread_service_principal.MSGraph.oauth2_permission_scope_ids["User.ReadBasic.All"]
-			type = "Scope"
-		}
-	}
-}
+# 		resource_access {
+# 			id   = data.azuread_service_principal.MSGraph.oauth2_permission_scope_ids["User.ReadBasic.All"]
+# 			type = "Scope"
+# 		}
+# 	}
+# }
 
-resource "azuread_service_principal" "SonarQube" {
-  application_id = azuread_application.SonarQube.application_id
-}
+# resource "azuread_service_principal" "SonarQube" {
+#   application_id = azuread_application.SonarQube.application_id
+# }
 
-resource "azuread_service_principal_password" "SonarQube" {
-  service_principal_id = azuread_service_principal.SonarQube.id
-  end_date_relative = "87660h" # 10 years
-}
+# resource "azuread_service_principal_password" "SonarQube" {
+#   service_principal_id = azuread_service_principal.SonarQube.id
+#   end_date_relative = "87660h" # 10 years
+# }
 
 resource "null_resource" "SonarQubeInit" {
 
@@ -185,8 +185,8 @@ resource "null_resource" "SonarQubeInit" {
 		environment = {
 		  HOSTNAME = azurerm_linux_web_app.SonarQube.default_hostname
 		  PASSWORD =  var.sonarqube_admin_password
-		  CLIENTID = azuread_application.SonarQube.application_id
-		  CLIENTSECRET = azuread_service_principal_password.SonarQube.value
+		  CLIENTID = "" #azuread_application.SonarQube.application_id
+		  CLIENTSECRET = "" #azuread_service_principal_password.SonarQube.value
 		}
 	}
 
