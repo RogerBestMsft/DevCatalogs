@@ -29,7 +29,7 @@ data "azurerm_app_configuration_key" "Settings_EnvironmentNetworkId" {
 }
 
 data "external" "DNSZoneDatabase" {
-	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZone.sh"]
+	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneA.sh"]
 	query = {
 	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
 	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
