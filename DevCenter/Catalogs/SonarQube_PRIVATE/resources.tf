@@ -28,7 +28,7 @@ data "azurerm_app_configuration_key" "Settings_EnvironmentNetworkId" {
 #  label                  = data.azurerm_resource_group.Environment.tags["EnvironmentType"]
 }
 
-resource "null_resource" "setexecute" {
+data "external" "setexecute" {
 	provisioner "local-exec" {
 		command = "chmod +x ${path.module}/EnsurePrivateDnsZoneB.sh"
 	}
