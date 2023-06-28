@@ -28,21 +28,6 @@ data "azurerm_app_configuration_key" "Settings_EnvironmentNetworkId" {
 #  label                  = data.azurerm_resource_group.Environment.tags["EnvironmentType"]
 }
 
-provisioner "remote-exec" {
-    inline = [
-      "chmod +x ${path.module}/EnsurePrivateDnsZoneB.sh",
-      #"sudo /tmp/setup-lnxcfg-user",
-    ]
-  }
-
-provisioner "remote-exec" {
-    inline = [
-      "chmod +x ${path.module}/InitSonarQubeB.sh",
-      #"sudo /tmp/setup-lnxcfg-user",
-    ]
-  }
-
-
 data "external" "DNSZoneDatabase" {
 	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneB.sh"]
 	query = {
