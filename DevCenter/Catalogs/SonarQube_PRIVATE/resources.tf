@@ -36,6 +36,18 @@ data "external" "DNSZoneDatabase" {
 	  ENVIRONMENTNETWORKID = "${data.azurerm_app_configuration_key.Settings_EnvironmentNetworkId.value}"
 	  DNSZONENAME = "privatelink.database.windows.net"
 	}
+	provisioner "remote-exec" {
+		inline = [
+		"chmod +x ${path.module}/EnsurePrivateDnsZoneB.sh",
+		#"sudo /tmp/setup-lnxcfg-user",
+		]
+  	}
+	provisioner "remote-exec" {
+		inline = [
+		"chmod +x ${path.module}/InitSonarQubeB.sh",
+		#"sudo /tmp/setup-lnxcfg-user",
+		]
+	}
 }
 
 data "external" "DNSZoneApplication" {
