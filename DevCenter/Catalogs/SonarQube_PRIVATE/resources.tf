@@ -29,7 +29,7 @@ data "azurerm_app_configuration_key" "Settings_EnvironmentNetworkId" {
 }
 
 data "external" "DNSZoneDatabase" {
-	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneA.sh"]
+	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneB.sh"]
 	query = {
 	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
 	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
@@ -39,7 +39,7 @@ data "external" "DNSZoneDatabase" {
 }
 
 data "external" "DNSZoneApplication" {
-	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZone.sh"]
+	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneB.sh"]
 	query = {
 	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
 	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
@@ -49,7 +49,7 @@ data "external" "DNSZoneApplication" {
 }
 
 data "external" "DNSZoneApplicationSCM" {
-	program = [ "bash", "${path.module}/EnsurePrivateDnsZone.sh"]
+	program = [ "bash", "${path.module}/EnsurePrivateDnsZoneB.sh"]
 	query = {
 	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
 	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
