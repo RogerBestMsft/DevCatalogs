@@ -81,3 +81,4 @@ displayHeader "Configure AzureAD PlugIn ..." \
 	&& setSonarQubeConfigValue "key=sonar.auth.aad.loginStrategy&value=Same%20as%20Azure%20AD%20login" \
 	&& restartSonarQube
 
+# end
