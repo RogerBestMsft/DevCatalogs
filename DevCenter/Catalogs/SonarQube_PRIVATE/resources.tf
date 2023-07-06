@@ -28,13 +28,13 @@ data "azurerm_app_configuration_key" "Settings_EnvironmentNetworkId" {
 #  label                  = data.azurerm_resource_group.Environment.tags["EnvironmentType"]
 }
 
-data "external" "setexecuteZone" {
-	program = ["chmod", "+x", "${path.module}/EnsurePrivateDnsZoneB.sh"]
-}
+# data "external" "setexecuteZone" {
+# 	program = ["chmod", "+x", "${path.module}/EnsurePrivateDnsZoneB.sh"]
+# }
 
-data "external" "setexecuteQube" {
-	program = ["chmod", "+x", "${path.module}/InitSonarQubeB.sh"]
-}
+# data "external" "setexecuteQube" {
+# 	program = ["chmod", "+x", "${path.module}/InitSonarQubeB.sh"]
+# }
 
 
 data "external" "DNSZoneDatabase" {
