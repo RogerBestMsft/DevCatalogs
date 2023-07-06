@@ -37,35 +37,35 @@ data "azurerm_app_configuration_key" "Settings_EnvironmentNetworkId" {
 # }
 
 
-data "external" "DNSZoneDatabase" {
-	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneB.sh"]
-	query = {
-	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
-	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
-	  ENVIRONMENTNETWORKID = "${data.azurerm_app_configuration_key.Settings_EnvironmentNetworkId.value}"
-	  DNSZONENAME = "privatelink.database.windows.net"
-	}	
-}
+# data "external" "DNSZoneDatabase" {
+# 	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneB.sh"]
+# 	query = {
+# 	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
+# 	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
+# 	  ENVIRONMENTNETWORKID = "${data.azurerm_app_configuration_key.Settings_EnvironmentNetworkId.value}"
+# 	  DNSZONENAME = "privatelink.database.windows.net"
+# 	}	
+# }
 
-data "external" "DNSZoneApplication" {
-	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneB.sh"]
-	query = {
-	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
-	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
-	  ENVIRONMENTNETWORKID = "${data.azurerm_app_configuration_key.Settings_EnvironmentNetworkId.value}"
-	  DNSZONENAME = "privatelink.azurewebsites.net"
-	}
-}
+# data "external" "DNSZoneApplication" {
+# 	program = [ "bash", "-c", "${path.module}/EnsurePrivateDnsZoneB.sh"]
+# 	query = {
+# 	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
+# 	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
+# 	  ENVIRONMENTNETWORKID = "${data.azurerm_app_configuration_key.Settings_EnvironmentNetworkId.value}"
+# 	  DNSZONENAME = "privatelink.azurewebsites.net"
+# 	}
+# }
 
-data "external" "DNSZoneApplicationSCM" {
-	program = [ "bash", "${path.module}/EnsurePrivateDnsZoneB.sh"]
-	query = {
-	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
-	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
-	  ENVIRONMENTNETWORKID = "${data.azurerm_app_configuration_key.Settings_EnvironmentNetworkId.value}"
-	  DNSZONENAME = "scm.privatelink.azurewebsites.net"
-	}
-}
+# data "external" "DNSZoneApplicationSCM" {
+# 	program = [ "bash", "${path.module}/EnsurePrivateDnsZoneB.sh"]
+# 	query = {
+# 	  RESOURCEGROUPID = "${data.azurerm_app_configuration_key.Settings_PrivateLinkResourceGroupId.value}"
+# 	  PROJECTNETWORKID = "${data.azurerm_app_configuration_key.Settings_ProjectNetworkId.value}"
+# 	  ENVIRONMENTNETWORKID = "${data.azurerm_app_configuration_key.Settings_EnvironmentNetworkId.value}"
+# 	  DNSZONENAME = "scm.privatelink.azurewebsites.net"
+# 	}
+# }
 
 resource "random_integer" "ResourceSuffix" {
 	min 					= 10000
@@ -186,26 +186,26 @@ resource "azurerm_mssql_database" "SonarQube" {
 #   end_date_relative = "87660h" # 10 years
 # }
 
-resource "null_resource" "SonarQubeInit" {
+# resource "null_resource" "SonarQubeInit" {
 
-	provisioner "local-exec" {
-		interpreter = [ "/bin/bash", "-c" ]
-		command = "${path.module}/scripts/InitSonarQube.sh"
-		environment = {
-		  HOSTNAME = azurerm_linux_web_app.SonarQube.default_hostname
-		  PASSWORD =  var.sonarqube_admin_password
-		  CLIENTID = "" #azuread_application.SonarQube.application_id
-		  CLIENTSECRET = "" #azuread_service_principal_password.SonarQube.value
-		}
-	}
+# 	provisioner "local-exec" {
+# 		interpreter = [ "/bin/bash", "-c" ]
+# 		command = "${path.module}/scripts/InitSonarQubeB.sh"
+# 		environment = {
+# 		  HOSTNAME = azurerm_linux_web_app.SonarQube.default_hostname
+# 		  PASSWORD =  var.sonarqube_admin_password
+# 		  CLIENTID = "" #azuread_application.SonarQube.application_id
+# 		  CLIENTSECRET = "" #azuread_service_principal_password.SonarQube.value
+# 		}
+# 	}
 
-	depends_on = [ 
-		# database needs to be hooked up with a private endpoint
-		azurerm_private_endpoint.SonarQubePL_Database,
-		# the app service need a outgoing network connection enabling to talk to the db private endpoint
-		azurerm_app_service_virtual_network_swift_connection.SonarQube
-	]
-}
+# 	depends_on = [ 
+# 		# database needs to be hooked up with a private endpoint
+# 		azurerm_private_endpoint.SonarQubePL_Database,
+# 		# the app service need a outgoing network connection enabling to talk to the db private endpoint
+# 		azurerm_app_service_virtual_network_swift_connection.SonarQube
+# 	]
+# }
 
 resource "azurerm_private_endpoint" "SonarQubePL_Database" {
 	name 							= "${azurerm_mssql_server.SonarQube.name}"
