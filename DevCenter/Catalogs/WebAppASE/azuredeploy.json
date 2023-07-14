@@ -59,6 +59,9 @@
             "apiVersion": "2022-09-01",
             "name": "[parameters('website_name')]",
             "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appplan_name'))]"
+            ]
             "kind": "app",
             "properties": {
                 "enabled": true,
