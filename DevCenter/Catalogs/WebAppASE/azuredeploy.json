@@ -61,7 +61,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', parameters('appplan_name'))]"
-            ]
+            ],
             "kind": "app",
             "properties": {
                 "enabled": true,
