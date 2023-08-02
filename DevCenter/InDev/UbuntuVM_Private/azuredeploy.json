@@ -1,0 +1,310 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "defaultValue": "UbuntuVMB",
+            "type": "String"
+        },
+        "SSH-PublicKey": {
+            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqPfEvPHBqNki/v3EIvvcyvalROZsfpaghZQAUgamDWoIFcud2zkpRxuu7XOr537cYq9NeqAlpZFogfvEG0M/6tpToGraZB1MfLZtjKBJrR+EkMW6ggSQFtXzHEwKGH85H63gSA3VBOZLMF9SB8s7tixtReByTIbNLE6Rr5laiL+TM8HEe5KBNa70DMEpMGr6szT+snUOpsutqRgWDhRPY5olB21KONsvDq5vM/aK9pcCKMnfTP3x53myJYy8+rDKAWZUWxmf80JQZL9pju4+xmZbd+giCuknYz8KY8fMO3E+DH3EIPdL662C/Oqu3vcA5cWf7MiwnBz2MB5LTIFYqpGuLbuObLBMhTEG85krWhxXQfuvlN84R4EZHHsK78Ivza+cyQc6W9XOPvkHHGbQN/9nvqwiKqSW87WoGb+z88isqvT7Ae7XMvsTIzqryzoni2kE3jMZhrI2cls6k+Bfh1+Xq/UZob23mdNKThpceWrzHtLPcxj3khD9vzA3esfU= generated-by-azure",
+            "type": "string"
+        },
+        "virtualNetworks_AdatumCorpNetwork_externalid": {
+            "defaultValue": "/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/DevBox_Network/providers/Microsoft.Network/virtualNetworks/AdatumCorpNetwork",
+            "type": "String"
+        }
+    },
+    "variables": {
+        "vm_Ssh_PublicKey_Name": "[concat(parameters('virtualMachineName'), '_key')]",
+        "vm_VNet_Name": "[concat(parameters('virtualMachineName'), '_vnet')]",
+        "vm_Nic_Name": "[concat(toLower(parameters('virtualMachineName')), '_nic')]",
+        "vm_Nsg_Name": "[concat(parameters('virtualMachineName'), '_nsg') ]",
+        "vm_VNet_Peer_Name": "[concat(variables('vm_VNet_Name'), '/', variables('peer_Name'))]",
+        "peer_VNet_Name": "AdatumCorpNetwork",
+        "peer_RG_Name": "DevBox_Network",
+        "peer_Name": "PeerBAlpha"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/sshPublicKeys",
+            "apiVersion": "2022-08-01",
+            "name": "[variables('vm_Ssh_PublicKey_Name')]",
+            "location": "eastus",
+            "properties": {
+                "publicKey": "[parameters('SSH-PublicKey')]"
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2022-08-01",
+            "name": "[parameters('virtualMachineName')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('vm_Nic_Name'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D4s_v3"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "canonical",
+                        "offer": "0001-com-ubuntu-server-focal",
+                        "sku": "20_04-lts-gen2",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[concat(parameters('virtualMachineName'), '_disk1_69b91e1f69ca4936b98f8bc1edbc78a6')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "deleteOption": "Delete",
+                        "diskSizeGB": 30
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachineName')]",
+                    "adminUsername": "azureuser",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "/home/azureuser/.ssh/authorized_keys",
+                                    "keyData": "[parameters('SSH-PublicKey')]"
+                                }
+                            ]
+                        },
+                        "provisionVMAgent": true,
+                        "patchSettings": {
+                            "patchMode": "ImageDefault",
+                            "assessmentMode": "ImageDefault"
+                        },
+                        "enableVMAgentPlatformUpdates": false
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm_Nic_Name'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('vm_Nsg_Name')]",
+            "location": "eastus",
+            "dependsOn": [],
+            "properties": {
+                "securityRules": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(variables('vm_Nsg_Name'), '/SSH')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('vm_Nsg_Name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 300,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('vm_VNet_Name')]",
+            "location": "eastus",
+            "dependsOn": [],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.1.0.0/16"
+                    ]
+                },
+                "subnets": [],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(variables('vm_VNet_Name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.1.0.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('vm_VNet_Peer_Name')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]"                
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "peeringSyncLevel": "FullyInSync",
+                "remoteVirtualNetwork": {
+                    "id": "[parameters('virtualNetworks_AdatumCorpNetwork_externalid')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "doNotVerifyRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "remoteVirtualNetworkAddressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "nestedPeering",
+            "resourceGroup": "[variables('peer_RG_Name')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', variables('vm_VNet_Name'), variables('Peer_Name'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "parameters": {
+                    "devBox_VNet_Name": {
+                        "value": "[variables('peer_VNet_Name')]"
+                    },
+                    "environment_VNet_Name": {
+                        "value": "[resourceId('Microsoft.Network/virtualNetworks', variables('vm_VNet_Name'))]"
+                    }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "devBox_VNet_Name":{
+                            "type": "string"
+                        },
+                        "environment_VNet_Name": {
+                            "type": "string"
+                        }
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                            "apiVersion": "2022-05-01",
+                            "name": "[concat(parameters('devBox_VNet_Name'), '/PeerCBravo')]",
+                            "dependsOn": [],
+                            "properties": {
+                                "peeringState": "Connected",
+                                "peeringSyncLevel": "FullyInSync",
+                                "remoteVirtualNetwork": {
+                                    "id": "[parameters('environment_VNet_Name')]"
+                                },
+                                "allowVirtualNetworkAccess": true,
+                                "allowForwardedTraffic": true,
+                                "allowGatewayTransit": false,
+                                "useRemoteGateways": false,
+                                "doNotVerifyRemoteGateways": false,
+                                "remoteAddressSpace": {
+                                    "addressPrefixes": [
+                                        "10.1.0.0/16"
+                                    ]
+                                },
+                                "remoteVirtualNetworkAddressSpace": {
+                                    "addressPrefixes": [
+                                        "10.1.0.0/16"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('vm_Nic_Name')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vm_VNet_Name'), 'default')]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('vm_Nsg_Name'))]"
+            ],
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', variables('vm_Nic_Name')), '/ipConfigurations/ipconfig1')]",
+                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.1.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vm_VNet_Name'), 'default')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": true,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('vm_Nsg_Name'))]"
+                },
+                "nicType": "Standard"
+            }
+        }
+    ]
+}
