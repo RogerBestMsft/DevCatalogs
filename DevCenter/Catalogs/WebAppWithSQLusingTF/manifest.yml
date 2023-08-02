@@ -16,8 +16,8 @@ parameters:
     description: "SQL Server Administrator."
     type: "string"
     required: true
-  - id: "database_name"
-    name: "database_name"
+  - id: "sql_db_name"
+    name: "sql_db_name"
     description: "SQL Server Database name."
     type: "string"
     required: true

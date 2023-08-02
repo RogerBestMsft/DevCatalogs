@@ -7,7 +7,6 @@ resource "random_integer" "ResourceSuffix" {
 	max						= 99999
 }
 
-# Vnet
 data "azurerm_virtual_network" "primary-vnet" {
   name = "primaryvnet${random_integer.ResourceSuffix.result}"
   resource_group_name = data.azurerm_resource_group.Environment.name
@@ -31,8 +30,8 @@ resource "azurerm_mssql_server" "primary-sql-server" {
 
 resource "azurerm_mssql_database" "db" {
   depends_on = [azurerm_mssql_server.primary-sql-server]
-  name      = var.database_name
-  server_id = azurerm_mssql_server.rbest-sql-server.id
+  name      = var.sql_db_name
+  server_id = azurerm_mssql_server.primary-sql-server.id
   collation = "Latin1_General_CI_AS"
   zone_redundant = false
   read_scale = false
