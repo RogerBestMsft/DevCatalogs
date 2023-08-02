@@ -31,7 +31,7 @@ resource "azurerm_mssql_server" "primary-sql-server" {
 
 resource "azurerm_mssql_database" "db" {
   depends_on = [azurerm_mssql_server.primary-sql-server]
-  name      = var.sql_db_name
+  name      = var.database_name
   server_id = azurerm_mssql_server.rbest-sql-server.id
   collation = "Latin1_General_CI_AS"
   zone_redundant = false

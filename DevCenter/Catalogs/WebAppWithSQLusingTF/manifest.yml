@@ -11,3 +11,13 @@ parameters:
     description: "SQL Server Administrator Password."
     type: "string"
     required: true
+  - id: "admin_username"
+    name: "admin_username"
+    description: "SQL Server Administrator."
+    type: "string"
+    required: true
+  - id: "database_name"
+    name: "database_name"
+    description: "SQL Server Database name."
+    type: "string"
+    required: true
