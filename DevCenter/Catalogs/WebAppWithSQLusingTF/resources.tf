@@ -7,16 +7,19 @@ resource "random_integer" "ResourceSuffix" {
 	max						= 99999
 }
 
-data "azurerm_virtual_network" "primary-vnet" {
+resource "azurerm_virtual_network" "primary-vnet" {
   name = "primaryvnet${random_integer.ResourceSuffix.result}"
   resource_group_name = data.azurerm_resource_group.Environment.name
+  address_space       = ["30.0.0.0/16"]
+  location            = data.azurerm_resource_group.Environment.location
 }
 
-data "azurerm_subnet" "sql-subnet" {
+resource "azurerm_subnet" "sql-subnet" {
   depends_on           = [azurerm_virtual_network.primary-vnet]
   name                 = "sqlsubnet"
-  virtual_network_name = data.azurerm_virtual_network.primary-vnet.name
+  virtual_network_name = azurerm_virtual_network.primary-vnet.name
   resource_group_name  = data.azurerm_resource_group.Environment.name
+  address_prefixes     = ["30.0.0.0/24"]
   delegation {
     name = "managedinstancedelegation"
 
@@ -37,16 +40,18 @@ resource "azurerm_mssql_managed_instance" "primary-sql-server" {
   resource_group_name          = data.azurerm_resource_group.Environment.name
   location                     = data.azurerm_resource_group.Environment.location
   administrator_login          = var.admin_username
-  administrator_login_password = var.admin_password  
-  version                      = "12.0"
-  public_network_access_enabled = false
-  subnet_id                    = [azurerm_subnet.sql-subnet.id]  
+  administrator_login_password = var.admin_password    
+  subnet_id                    = azurerm_subnet.sql-subnet.id
+  license_type                 = "BasePrice"
+  sku_name                     = "GP_Gen5"
+  vcores                       = 8
+  storage_size_in_gb           = 32
 }
 
 resource "azurerm_mssql_database" "db" {
-  depends_on = [azurerm_mssql_server.primary-sql-server]
+  depends_on = [azurerm_mssql_managed_instance.primary-sql-server]
   name      = var.sql_db_name
-  server_id = azurerm_mssql_server.primary-sql-server.id
+  server_id = azurerm_mssql_managed_instance.primary-sql-server.id
   collation = "Latin1_General_CI_AS"
   zone_redundant = false
   read_scale = false
