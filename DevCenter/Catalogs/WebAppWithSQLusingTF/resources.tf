@@ -13,19 +13,34 @@ data "azurerm_virtual_network" "primary-vnet" {
 }
 
 data "azurerm_subnet" "sql-subnet" {
+  depends_on           = [azurerm_virtual_network.primary-vnet]
   name                 = "sqlsubnet"
   virtual_network_name = data.azurerm_virtual_network.primary-vnet.name
   resource_group_name  = data.azurerm_resource_group.Environment.name
+  delegation {
+    name = "managedinstancedelegation"
+
+    service_delegation {
+      name = "Microsoft.Sql/managedInstances"
+      actions = [
+        "Microsoft.Network/virtualNetworks/subnets/join/action",
+        "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+        "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
+      ]
+    }
+  }
 }
 
-resource "azurerm_mssql_server" "primary-sql-server" {
+resource "azurerm_mssql_managed_instance" "primary-sql-server" {
+  depends_on                   = [azurerm_subnet.sql-subnet]
   name                         = "primaryserver${random_integer.ResourceSuffix.result}"
   resource_group_name          = data.azurerm_resource_group.Environment.name
   location                     = data.azurerm_resource_group.Environment.location
   administrator_login          = var.admin_username
-  administrator_login_password = var.admin_password
+  administrator_login_password = var.admin_password  
   version                      = "12.0"
   public_network_access_enabled = false
+  subnet_id                    = [azurerm_subnet.sql-subnet.id]  
 }
 
 resource "azurerm_mssql_database" "db" {
