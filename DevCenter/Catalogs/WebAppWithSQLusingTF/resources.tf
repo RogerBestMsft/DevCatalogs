@@ -34,6 +34,31 @@ resource "azurerm_subnet" "sql-subnet" {
   }
 }
 
+resource "azurerm_network_security_group" "sql_secgroup" {
+  name                = "sqlnsg${random_integer.ResourceSuffix.result}"
+  location            = data.azurerm_resource_group.Environment.location
+  resource_group_name = data.azurerm_resource_group.Environment.name
+}
+
+resource "azurerm_subnet_network_security_group_association" "sql_secgroup_associate" {
+  subnet_id                 = azurerm_subnet.sql-subnet.id
+  network_security_group_id = azurerm_network_security_group.sql_secgroup.id
+}
+
+# Create a route table
+resource "azurerm_route_table" "sql_route_table" {
+  name                          = "sqlrt${random_integer.ResourceSuffix.result}"
+  location                      = data.azurerm_resource_group.Environment.location
+  resource_group_name           = data.azurerm_resource_group.Environment.name
+  disable_bgp_route_propagation = false
+}
+
+# Associate subnet and the route table
+resource "azurerm_subnet_route_table_association" "sql_route_table" {
+  subnet_id      = azurerm_subnet.sql-subnet.id
+  route_table_id = azurerm_route_table.sql_route_table.id
+}
+
 resource "azurerm_mssql_managed_instance" "primary-sql-server" {
   depends_on                   = [azurerm_subnet.sql-subnet]
   name                         = "primaryserver${random_integer.ResourceSuffix.result}"
