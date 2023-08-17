@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: RegisteredWebApp
+version: 1.0.0
+summary: Web app for demo https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/blob/master/1-WebApp-OIDC/1-1-MyOrg/README.md
+description: ASP.NET Core web app registered app
+runner: TerraForm
+templatePath: main.tf  
