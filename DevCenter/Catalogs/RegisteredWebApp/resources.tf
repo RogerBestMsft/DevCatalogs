@@ -25,9 +25,11 @@ resource "azurerm_windows_web_app" "WebAppDemoWeb" {
 	
 	service_plan_id 		= azurerm_service_plan.WebAppDemo.id
 	https_only 				= true
+
+  site_config {}
 }
 
-resource "azuread_application" "SonarQube" {
+resource "azuread_application" "WebAppDemoWebRegistry" {
 	display_name 					= "${data.azurerm_resource_group.Environment.name}-${azurerm_windows_web_app.WebAppDemoWeb.default_hostname}"
 	identifier_uris  				= [ "api://${data.azurerm_resource_group.Environment.name}-${azurerm_windows_web_app.WebAppDemoWeb.default_hostname}" ]
 	owners 							= [ data.azuread_client_config.Current.object_id ]
