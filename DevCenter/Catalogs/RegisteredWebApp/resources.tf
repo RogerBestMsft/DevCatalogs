@@ -1,3 +1,9 @@
+
+# resource "azurerm_resource_group" "rg" {
+#   location = "eastus"
+#   name     = "AAAAAAAlpha"
+# }
+
 data "azuread_client_config" "Current" {}
 
 data "azuread_application_published_app_ids" "well_known" {}
