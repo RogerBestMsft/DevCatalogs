@@ -23,16 +23,16 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb
+        run: dotnet build --configuration Release DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb -o ${{env.DOTNET_ROOT}}/DotNetCoreSqlDb
 
       - name: dotnet publish
-        run: dotnet publish DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb -c Release -o DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb
+        run: dotnet publish DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb -c Release -o ${{env.DOTNET_ROOT}}/DotNetCoreSqlDb
 
       - name: dotnet install ef
         run: dotnet tool install -g dotnet-ef
 
       - name: dotnet ef migration
-        run: dotnet ef migrations bundle --runtime linux-x64 --project DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb -o ${{env.DOTNET_ROOT}}/DevCenter/src_DotNetCoreSqlDb/migrate
+        run: dotnet ef migrations bundle --runtime linux-x64 --project DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb -o ${{env.DOTNET_ROOT}}/DotNetCoreSqlDb/migrate
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
