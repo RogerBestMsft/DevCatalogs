@@ -26,7 +26,7 @@ jobs:
         run: dotnet build --configuration Release DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/DevCenter/src_DotNetCoreSqlDb
+        run: dotnet publish -c Release -o $ DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb
 
       - name: dotnet install ef
         run: dotnet tool install -g dotnet-ef
