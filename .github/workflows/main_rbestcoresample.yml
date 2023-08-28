@@ -23,7 +23,7 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build ${{env.DOTNET_ROOT}}/DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb.sln --configuration Release 
+        run: dotnet build --configuration Release DotNetCoreSqlDb/DotNetCoreSqlDb.csproj
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/DevCenter/src_DotNetCoreSqlDb
