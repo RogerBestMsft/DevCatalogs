@@ -23,16 +23,22 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ${{env.DOTNET_ROOT}}/DevCenter/src_DotNetCoreSqlDb/DotNetCoreSqlDb.sln --configuration Release 
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/DevCenter/src_DotNetCoreSqlDb
+
+      - name: dotnet install ef
+        run: dotnet tool install -g dotnet-ef
+
+      - name: dotnet ef migration
+        run: dotnet ef migrations bundle --runtime linux-x64 -p DotNetCoreSqlDb/DotNetCoreSqlDb.csproj -o ${{env.DOTNET_ROOT}}//DevCenter/src_DotNetCoreSqlDb/migrate
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}/DevCenter/src_DotNetCoreSqlDb
 
   deploy:
     runs-on: ubuntu-latest
