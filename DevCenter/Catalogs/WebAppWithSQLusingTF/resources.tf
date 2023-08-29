@@ -22,12 +22,23 @@ resource "azurerm_virtual_network" "primary-vnet" {
   location            = data.azurerm_resource_group.Environment.location
 }
 
+
+resource "azurerm_subnet" "default-subnet" {
+  depends_on           = [azurerm_virtual_network.primary-vnet]
+  name                 = "default"
+  resource_group_name  = data.azurerm_resource_group.Environment.name
+  virtual_network_name = azurerm_virtual_network.primary-vnet.name
+  address_prefixes     = ["30.0.0.0/24"]
+  private_endpoint_network_policies_enabled = true
+}
+
+
 resource "azurerm_subnet" "sql-subnet" {
   depends_on           = [azurerm_virtual_network.primary-vnet]
   name                 = "sqlsubnet"
   virtual_network_name = azurerm_virtual_network.primary-vnet.name
   resource_group_name  = data.azurerm_resource_group.Environment.name
-  address_prefixes     = ["30.0.0.0/24"]
+  address_prefixes     = ["30.0.1.0/24"]
   delegation {
     name = "managedinstancedelegation"
 
@@ -41,6 +52,16 @@ resource "azurerm_subnet" "sql-subnet" {
     }
   }
 }
+
+resource "azurerm_subnet" "endpoint-subnet" {
+  depends_on           = [azurerm_virtual_network.primary-vnet]
+  name                 = "endpointsubnet"
+  resource_group_name  = data.azurerm_resource_group.Environment.name
+  virtual_network_name = azurerm_virtual_network.primary-vnet.name
+  address_prefixes     = ["30.0.2.0/24"]
+  private_endpoint_network_policies_enabled = true
+}
+
 
 resource "azurerm_network_security_group" "sql_secgroup" {
   name                = "sqlnsg${random_integer.ResourceSuffix.result}"
@@ -175,6 +196,37 @@ resource "azurerm_windows_web_app" "WebAppDemoWeb" {
 	https_only 				= true
 
   site_config {}
+}
+
+resource "azurerm_private_dns_zone" "webdnsprivatezone" {
+  name                = "privatelink.azurewebsites.net"
+  resource_group_name = data.azurerm_resource_group.Environment.name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "dnszonelink" {
+  name = "dnszonelink"
+  resource_group_name = data.azurerm_resource_group.Environment.name
+  private_dns_zone_name = azurerm_private_dns_zone.webdnsprivatezone.name
+  virtual_network_id = azurerm_virtual_network.primary-vnet.id
+}
+
+resource "azurerm_private_endpoint" "webprivateendpoint" {
+  name                = "webappprivateendpoint"
+  location            = data.azurerm_resource_group.Environment.location
+  resource_group_name = data.azurerm_resource_group.Environment.name
+  subnet_id           = azurerm_subnet.endpoint-subnet.id
+
+  private_dns_zone_group {
+    name = "privatednszonegroup"
+    private_dns_zone_ids = [azurerm_private_dns_zone.webdnsprivatezone.id]
+  }
+
+  private_service_connection {
+    name = "privateendpointconnection"
+    private_connection_resource_id = azurerm_windows_web_app.WebAppDemoWeb.id
+    subresource_names = ["sites"]
+    is_manual_connection = false
+  }
 }
 
 resource "azuread_application" "WebAppDemoWebRegistry" {
