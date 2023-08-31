@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: WebAppSqlManDB
+version: 1.0.0
+summary: Web App with Sql Managed Database
+description: Registered Web app and DB connected to Devbox vnet that has Sql Managed Instance.
+runner: TerraForm
+templatePath: main.tf
+parameters:
+  - id: "admin_password"
+    name: "admin_password"
+    description: "SQL Server Administrator Password."
+    type: "string"
+    required: true
