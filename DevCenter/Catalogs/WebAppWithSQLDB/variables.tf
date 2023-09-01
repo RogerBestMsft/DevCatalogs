@@ -18,6 +18,11 @@ variable "project_virtual_network_name" {
   default = "vanarsdelltdalphadevvnet"
 }
 
+variable "project_virtual_subnet_name" {
+  type = string
+  default = "sqlprivatesubnet"
+}
+
 variable "sql_resource_group_name" {
   type = string
   default = "VanArsdelLTD-Alpha-Dev-RG-Sql"

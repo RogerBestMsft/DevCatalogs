@@ -20,7 +20,13 @@ data "azurerm_resource_group" "SqlInstRG" {
 
 data "azurerm_virtual_network" "project-vnet" {
   name = "${var.project_virtual_network_name}"
-  resource_group_name = ProjectRG.name
+  resource_group_name = data.azurerm_resource_group.ProjectRG.name
+}
+
+data "azurerm_subnet" "endpoint-subnet" {
+  name = "${var.project_virtual_subnet_name}"
+  virtual_network_name = data.azurerm_virtual_network.project-vnet.name
+  resource_group_name = data.azurerm_resource_group.ProjectRG.name
 }
 
 resource "random_integer" "ResourceSuffix" {
@@ -28,19 +34,15 @@ resource "random_integer" "ResourceSuffix" {
 	max						= 99999
 }
 
-
-resource "azurerm_mssql_managed_instance" "primary-sql-server" {
+data "azurerm_mssql_managed_instance" "primary-sql-server" {
   name                         = "${var.sql_managed_instance_name}"
   resource_group_name          = data.azurerm_resource_group.SqlInstRG.name
 }
 
-resource "azurerm_mssql_database" "db" {
-  depends_on = [azurerm_mssql_managed_instance.primary-sql-server]
+resource "azurerm_mssql_managed_database" "db" {
+  depends_on = [data.azurerm_mssql_managed_instance.primary-sql-server]
   name      = var.sql_db_name
-  server_id = azurerm_mssql_managed_instance.primary-sql-server.id
-  collation = "Latin1_General_CI_AS"
-  zone_redundant = false
-  read_scale = false
+  managed_instance_id = data.azurerm_mssql_managed_instance.primary-sql-server.id
 }
 
 resource "azurerm_service_plan" "WebAppDemo" {
@@ -72,14 +74,14 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dnszonelink" {
   name = "dnszonelink"
   resource_group_name = data.azurerm_resource_group.EnvironmentRG.name
   private_dns_zone_name = azurerm_private_dns_zone.webdnsprivatezone.name
-  virtual_network_id = azurerm_virtual_network.primary-vnet.id
+  virtual_network_id = data.azurerm_virtual_network.project-vnet.id
 }
 
 resource "azurerm_private_endpoint" "webprivateendpoint" {
   name                = "webappprivateendpoint"
   location            = data.azurerm_resource_group.EnvironmentRG.location
   resource_group_name = data.azurerm_resource_group.EnvironmentRG.name
-  subnet_id           = azurerm_subnet.endpoint-subnet.id
+  subnet_id           = data.azurerm_subnet.endpoint-subnet.id
 
   private_dns_zone_group {
     name = "privatednszonegroup"
