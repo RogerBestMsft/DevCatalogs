@@ -23,11 +23,11 @@ data "azurerm_virtual_network" "project-vnet" {
   resource_group_name = data.azurerm_resource_group.ProjectRG.name
 }
 
-data "azurerm_subnet" "endpoint-subnet" {
-  name = "${var.project_virtual_subnet_name}"
-  virtual_network_name = data.azurerm_virtual_network.project-vnet.name
-  resource_group_name = data.azurerm_resource_group.ProjectRG.name
-}
+# data "azurerm_subnet" "endpoint-subnet" {
+#   name = "${var.project_virtual_subnet_name}"
+#   virtual_network_name = data.azurerm_virtual_network.project-vnet.name
+#   resource_group_name = data.azurerm_resource_group.ProjectRG.name
+# }
 
 resource "random_integer" "ResourceSuffix" {
 	min 					= 10000
@@ -44,6 +44,34 @@ resource "azurerm_mssql_managed_database" "db" {
   name      = var.sql_db_name
   managed_instance_id = data.azurerm_mssql_managed_instance.primary-sql-server.id
 }
+
+
+resource "azurerm_virtual_network" "webapp-vnet" {
+  name = "primaryvnet${random_integer.ResourceSuffix.result}"
+  resource_group_name = data.azurerm_resource_group.EnvironmentRG.name
+  address_space       = ["30.0.0.0/16"]
+  location            = data.azurerm_resource_group.EnvironmentRG.location
+}
+
+
+resource "azurerm_subnet" "default-subnet" {
+  depends_on           = [azurerm_virtual_network.webapp-vnet]
+  name                 = "default"
+  resource_group_name  = data.azurerm_resource_group.EnvironmentRG.name
+  virtual_network_name = azurerm_virtual_network.webapp-vnet.name
+  address_prefixes     = ["30.0.0.0/24"]
+  private_endpoint_network_policies_enabled = true
+}
+
+resource "azurerm_subnet" "endpoint-subnet" {
+  depends_on           = [azurerm_virtual_network.webapp-vnet]
+  name                 = "endpointsubnet"
+  resource_group_name  = data.azurerm_resource_group.EnvironmentRG.name
+  virtual_network_name = azurerm_virtual_network.webapp-vnet.name
+  address_prefixes     = ["30.0.2.0/24"]
+  private_endpoint_network_policies_enabled = true
+}
+
 
 resource "azurerm_service_plan" "WebAppDemo" {
 	name                	= "webappsqldemo${random_integer.ResourceSuffix.result}-plan"
@@ -74,14 +102,14 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dnszonelink" {
   name = "dnszonelink"
   resource_group_name = data.azurerm_resource_group.EnvironmentRG.name
   private_dns_zone_name = azurerm_private_dns_zone.webdnsprivatezone.name
-  virtual_network_id = data.azurerm_virtual_network.project-vnet.id
+  virtual_network_id = azurerm_virtual_network.webapp-vnet.id
 }
 
 resource "azurerm_private_endpoint" "webprivateendpoint" {
   name                = "webappprivateendpoint"
   location            = data.azurerm_resource_group.EnvironmentRG.location
   resource_group_name = data.azurerm_resource_group.EnvironmentRG.name
-  subnet_id           = data.azurerm_subnet.endpoint-subnet.id
+  subnet_id           = azurerm_subnet.endpoint-subnet.id
 
   private_dns_zone_group {
     name = "privatednszonegroup"

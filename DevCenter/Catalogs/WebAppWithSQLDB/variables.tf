@@ -31,7 +31,7 @@ variable "sql_resource_group_name" {
 variable "sql_db_name" {
   type        = string
   description = "The name of the SQL Database."
-  default     = "SampleDB"
+  default     = "TestDBAlpha"
 }
 
 variable "sql_managed_instance_name" {
