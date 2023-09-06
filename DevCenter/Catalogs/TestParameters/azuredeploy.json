@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "TestString": {
+        "type": "string"
+        },
+        "TestBool": {
+        "type": "bool"
+        },
+        "TestInt": {
+            "type": "int"
+        }
+    },
+    "resources": [],
+    "outputs": {
+        "TS": {
+            "type": "string",
+            "value": "[parameters('TestString')]"
+        },
+        "TI": {
+            "type": "int",
+            "value": "[parameters('TestInt')]"
+        },
+        "TB": {
+            "type": "bool",
+            "value": "[parameters('TestBool')]"
+        }
+    }
+  }
