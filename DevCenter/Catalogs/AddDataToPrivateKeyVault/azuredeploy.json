@@ -58,6 +58,9 @@
       "type": "Microsoft.ContainerInstance/containerGroups",
       "apiVersion": "2023-05-01",
       "name": "[variables('containerGroupName')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
       "location": "[parameters('location')]",
       "properties": {
         "containers": [
@@ -108,10 +111,7 @@
                 "id": "/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/TreyResearch_PrivateSQL/providers/Microsoft.Network/virtualNetworks/TRPrivateSqlVnet/subnets/containersubnet"
             }
         ]
-      },
-      "dependsOn": [
-        "storageAccount"
-      ]
+      }
     },
 	{
     "type": "Microsoft.Resources/deploymentScripts",
