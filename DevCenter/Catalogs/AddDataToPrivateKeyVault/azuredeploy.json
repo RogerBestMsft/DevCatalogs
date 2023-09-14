@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+    },
+    "resources": [
+        {
+        "type": "Microsoft.Resources/deploymentScripts",
+        "apiVersion": "2020-10-01",
+        "name": "runPowerShellInline",
+        "location": "[resourceGroup().location]",
+        "tags": {
+            "tagName1": "tagValue1",
+            "tagName2": "tagValue2"
+        },
+        "kind": "AzurePowerShell", // or "AzureCLI"
+        "properties": {
+            "forceUpdateTag": "1",
+            "containerSettings": {
+            "containerGroupName": "mycustomaci"
+            },
+            "storageAccountSettings": {
+            "storageAccountName": "myStorageAccount",
+            "storageAccountKey": "myKey"
+            },
+            "azPowerShellVersion": "9.7",  // or "azCliVersion": "2.47.0",
+            "arguments": "-name \\\"John Dole\\\"",
+            "environmentVariables": [
+            {
+                "name": "UserName",
+                "value": "jdole"
+            },
+            {
+                "name": "Password",
+                "secureValue": "jDolePassword"
+            }
+            ],
+            "scriptContent": "
+            param([string] $name)
+            $output = 'Hello {0}. The username is {1}, the password is {2}.' -f $name,${Env:UserName},${Env:Password}
+            Write-Output $output
+            $DeploymentScriptOutputs = @{}
+            $DeploymentScriptOutputs['text'] = $output",
+            "supportingScriptUris":[],
+            "timeout": "PT30M",
+            "cleanupPreference": "OnSuccess",
+            "retentionInterval": "P1D"
+        }
+        }
+    ],
+    "outputs": {
+    }
+  }

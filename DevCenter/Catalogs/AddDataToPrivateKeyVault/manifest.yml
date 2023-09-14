@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+
+name: AddDataToPrivateKeyVault
+version: 1.0.0
+summary: Add data to existing private key vault
+description: Add data to existing private key vault
+
+runner: ARM
+templatePath: azuredeploy.json
