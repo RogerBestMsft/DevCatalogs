@@ -33,94 +33,10 @@
     "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
   },
   "resources": [
-    {
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2022-09-01",
-      "name": "[variables('storageAccountName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "Standard_LRS"
-      },
-      "kind": "StorageV2",
-      "properties": {
-        "accessTier": "Hot"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('fileShareName'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2023-05-01",
-      "name": "[variables('containerGroupName')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-      ],
-      "location": "[parameters('location')]",
-      "properties": {
-        "containers": [
-          {
-            "name": "[variables('containerName')]",
-            "properties": {
-              "image": "[parameters('containerImage')]",
-              "resources": {
-                "requests": {
-                  "cpu": 1,
-                  "memoryInGB": "[json('1.5')]"
-                }
-              },
-              "ports": [
-                {
-                  "protocol": "TCP",
-                  "port": 80
-                }
-              ],
-              "volumeMounts": [
-                {
-                  "name": "filesharevolume",
-                  "mountPath": "[parameters('mountPath')]"
-                }
-              ],
-              "command": [
-                "/bin/sh",
-                "-c",
-                "pwsh -c 'Start-Sleep -Seconds 1800'"
-              ]
-            }
-          }
-        ],
-        "osType": "Linux",
-        "volumes": [
-          {
-            "name": "filesharevolume",
-            "azureFile": {
-              "readOnly": false,
-              "shareName": "[variables('fileShareName')]",
-              "storageAccountName": "[variables('storageAccountName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-09-01').keys[0].value]"
-            }
-          }
-        ],
-        "subnetIds": [
-            {
-                "id": "/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/TreyResearch_PrivateSQL/providers/Microsoft.Network/virtualNetworks/TRPrivateSqlVnet/subnets/containersubnet"
-            }
-        ]
-      }
-    },
 	{
     "type": "Microsoft.Resources/deploymentScripts",
         "apiVersion": "2020-10-01",
         "name": "runPowerShellInline",
-        "dependsOn": [
-            "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))]",
-            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-        ],
         "location": "[resourceGroup().location]",
         "tags": {
             "tagName1": "tagValue1",
@@ -129,13 +45,6 @@
         "kind": "AzurePowerShell", // or "AzureCLI"
         "properties": {
             "forceUpdateTag": "1",
-            "containerSettings": {
-            "containerGroupName": "[variables('containerGroupName')]"
-            },
-            "storageAccountSettings": {
-                "storageAccountName": "[variables('storageAccountName')]",
-                "storageAccountKey": "[listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value]"
-            },
             "azPowerShellVersion": "9.7",  // or "azCliVersion": "2.47.0",
             "arguments": "-name \\\"John Dole\\\"",
             "environmentVariables": [
@@ -149,11 +58,11 @@
             }
             ],
             "scriptContent": "
-            param([string] $name)
-            $output = 'Hello {0}. The username is {1}, the password is {2}.' -f $name,${Env:UserName},${Env:Password}
-            Write-Output $output
-            $DeploymentScriptOutputs = @{}
-            $DeploymentScriptOutputs['text'] = $output",
+                param([string] $name)
+                $output = 'Hello {0}. The username is {1}, the password is {2}.' -f $name,${Env:UserName},${Env:Password}
+                Write-Output $output
+                $DeploymentScriptOutputs = @{}
+                $DeploymentScriptOutputs['text'] = $output",
             "supportingScriptUris":[],
             "timeout": "PT30M",
             "cleanupPreference": "OnSuccess",
