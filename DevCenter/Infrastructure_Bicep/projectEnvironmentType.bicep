@@ -1,5 +1,6 @@
 param projectName  string
 param envTypeObject object = {}
+param location string
 
 // Contributor
 //param creatorRoleAssignment string = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -7,18 +8,18 @@ param envTypeObject object = {}
 @sys.description('Tags to apply to the resources')
 param tags object = {}
 
-var creatorRole = string(envTypeObject.CreatorRoles)
+//var creatorRole = string(envTypeObject.creatorRoles)
 
 resource project 'Microsoft.DevCenter/projects@2023-01-01-preview' existing = {
   name: projectName
 }
 
 resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2023-01-01-preview' = {
-  name: envTypeObject.name
+  name: envTypeObject.type
   parent: project
-  location: envTypeObject.location
+  location: location
   identity: {
-    type: envTypeObject.identity.idtype
+    type: envTypeObject.identity.type
   }
   properties: {
     status: 'Enabled'
@@ -26,7 +27,7 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2023-01-
     deploymentTargetId: '/subscriptions/${envTypeObject.subscriptionId}'
     creatorRoleAssignment: {
       roles: {
-        '${creatorRole}': {}
+        'b24988ac-6180-42a0-ab88-20f7382dd24c' : {}
       }
     }
   }
@@ -43,5 +44,3 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2023-01-
 //   }
 //   scope: environmentType
 // }
-
-output xxx string = creatorRole

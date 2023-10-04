@@ -152,6 +152,9 @@ resource dcgallery 'Microsoft.DevCenter/devcenters/galleries@2023-04-01' = {
 
 // Add devbox definition
 module devBoxDefinitionCreation 'devboxDefinition.bicep' = [for dbDef in devCenterInput.devboxDefinitions: {
+  dependsOn: [
+    devCenter
+  ]
   name: '${dbDef.name}-DBDCreate'
   params: {
    location: devCenterInput.location
@@ -187,7 +190,6 @@ resource organizationvnet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   }
   tags: tags
 }
-
 
 output devCenterId string = devCenter.id
 output devCenterName string = devCenter.name

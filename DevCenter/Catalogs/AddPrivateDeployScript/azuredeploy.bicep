@@ -81,7 +81,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
   }
 }
 
-@description('Create the storage with necessary settings')
+@description('Create the storage where the deployment script info is stored')
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
   location: location
@@ -131,7 +131,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 }
 
 
-@description('Create the storage with necessary settings')
+@description('Create the storage with necessary settings to test the deployment script')
 resource storageAccountb 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountBName
   location: location
@@ -258,7 +258,7 @@ resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefin
   scope: tenant()
 }
 
-@description('get the built-in role definition Storage File Data Privileged Contributor')
+@description('get the built-in role definition Contributor')
 resource contributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   scope: tenant()

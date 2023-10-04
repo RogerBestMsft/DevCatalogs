@@ -13,24 +13,28 @@ resource project 'Microsoft.DevCenter/projects@2023-01-01-preview' = {
   name: projectObject.name
   location: projectObject.location
   properties: {    
-    devCenterId: devCenterObject.devCenter.Id
+    devCenterId: devCenterObject.devCenterId.value
   }
   tags: tags
 }
 
-// assign dev center identity owner role on each environment type subscription
+// Create vnet for each project and add to devcenter
 module networkCreation 'network.bicep' = [for vnet in projectObject.vnet: {
   name: '${vnet.name}-Create' //guid('owner${projectObject.name}')
-  scope: resourceGroup()  
+  scope: resourceGroup()
   params: {
-    devCenterId: devCenterObject.devCenter.Id
+    devCenterId: devCenterObject.devCenterId.value
     vnetObject: vnet
+    location: project.location
     tags: tags
-  }
+  }  
 }]
 
 // Add users admin - Devbox User - ADE User
 module roleCreation 'projectRoles.bicep' = [for (projectAdmin,i) in projectObject.ProjectAdmins: {
+  dependsOn: [
+    project
+  ]
   name: '${projectObject.name}${i}-AdminCreate'
   params: {
     principalId: projectAdmin
@@ -44,17 +48,34 @@ module roleCreation 'projectRoles.bicep' = [for (projectAdmin,i) in projectObjec
 
 
 // Add environments
-// module envTypeCreation 'projectEnvironmentType.bicep' = [for envType in projectObject.environmentTypes: {
-//   name: '${envType.name}-EnvCreate'
-//   params: {
-//     projectName: projectObject.name
-//     envTypeObject: envType
-//     tags: tags
-//   }
-// }]
+module envTypeCreation 'projectEnvironmentType.bicep' = [for (envType,i) in projectObject.environmentTypes: {
+  dependsOn: [
+    project
+  ]
+  name: '${envType.type}${i}-EnvCreate'
+  params: {
+    projectName: projectObject.name
+    location: projectObject.location
+    envTypeObject: envType
+    tags: tags
+  }
+}]
 
 
 
 // Add pools
-
+module poolCreation 'pool.bicep' = [ for (pool,i) in projectObject.pools :{
+  dependsOn: [
+    project
+  ]
+  name: '${pool.name}${i}-PoolCreate'
+  params: {
+    name: pool.name
+    projectName: projectObject.name
+    location: projectObject.location
+    devBoxDefinitionName: pool.definition
+    networkConnectionName: networkCreation[0].outputs.networkconnection
+    tags: tags
+  }
+}]
 //

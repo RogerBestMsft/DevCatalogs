@@ -27,13 +27,13 @@ $devCenter = New-AzResourceGroupDeployment -Name 'TestDelployDC' `
 
 foreach ($project in $projects) {
 
-    $projectRG = New-AzDeployment -Name "Deploy$($project.name)ResourceGroup" `
+    $projectRG = New-AzDeployment -Name "Deploy$($project.name)AResourceGroup" `
     -Location $project.location `
     -Debug `
     -TemplateFile .\resourceGroup.bicep `
     -resourceObject $project
 
-    $project = New-AzResourceGroupDeployment -Name "Deploy$($project.name)" `
+    $newproject = New-AzResourceGroupDeployment -Name "CDeploy$($project.name)" `
     -ResourceGroupName $project.resourceGroupName `
     -Debug `
     -Force `
@@ -47,7 +47,11 @@ foreach ($project in $projects) {
 
 
 #Test
-
+New-AzResourceGroupDeployment -Name "TestDeployAlpha" `
+-ResourceGroupName "TestRG" `
+-Debug `
+-Force `
+-TemplateFile .\azuredeploy.bicep
 
 New-AzResourceGroupDeployment -Name 'Charlie' `
     -ResourceGroupName $devCenterInput.resourceGroupName `
