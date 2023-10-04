@@ -4,7 +4,7 @@ param location string  = resourceGroup().location
 param utcValue string = utcNow()
 
 var storageAccountName = '${prefix}storage'
-var storageAccountBName = '${prefix}storageb'
+var testStorageAccountName = '${prefix}storageb'
 param vnetName string = '${prefix}Vnet'
 var subnetName = '${prefix}Subnet'
 var privatesubnetName = '${prefix}privateSubnet'
@@ -132,8 +132,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 
 
 @description('Create the storage with necessary settings to test the deployment script')
-resource storageAccountb 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: storageAccountBName
+resource storageAccountTest 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: testStorageAccountName
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -183,7 +183,7 @@ resource storageAccountb 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 
 resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
   name: 'default'
-  parent: storageAccountb
+  parent: storageAccountTest
 }
 
 // Create containers if specified
@@ -206,7 +206,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
     privateLinkServiceConnections: [
       {
         properties: {
-          privateLinkServiceId: storageAccountb.id
+          privateLinkServiceId: storageAccountTest.id
           groupIds: [
             'blob'
           ]
@@ -278,18 +278,18 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 
 @description('assign the built in role to the storage account')
 resource roleAssignmentb 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(storageFileDataPrivilegedContributor.id, userAssignedIdentity.id, storageAccountb.id)
+  name: guid(storageFileDataPrivilegedContributor.id, userAssignedIdentity.id, storageAccountTest.id)
   properties: {
     principalId: userAssignedIdentity.properties.principalId
     roleDefinitionId: storageFileDataPrivilegedContributor.id
     principalType: 'ServicePrincipal'
   }
-  scope: storageAccountb
+  scope: storageAccountTest
 }
 
 @description('assign the necessary role for the deployment script.')
 resource roleAssignmentc 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(contributor.id, userAssignedIdentity.id, storageAccountb.id)
+  name: guid(contributor.id, userAssignedIdentity.id, storageAccountTest.id)
   properties: {
     principalId: userAssignedIdentity.properties.principalId
     roleDefinitionId: contributor.id
@@ -330,7 +330,7 @@ resource dsTest 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       }
       {
         name: 'storageAccountName'
-        value: storageAccountb.name
+        value: storageAccountTest.name
       }
     ]
     scriptContent: '''
