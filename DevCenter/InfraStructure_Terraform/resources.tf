@@ -162,21 +162,64 @@ resource "azapi_resource" "devcenter_devbox_definitions" {
 	depends_on = [ azapi_resource.devcenter ]
 }
 
-resource "azapi_resource" "devcenter_projects" {
-  type = "Microsoft.DevCenter/projects@2023-04-01"
-  for_each = {
-	  for index, project in var.project_objects:
-	  project.name => project
-	}
-  name = each.value.name
-  location = each.value.location
+# resource "azapi_resource" "devcenter_projects" {
+#   type = "Microsoft.DevCenter/projects@2023-04-01"
+#   for_each = {
+# 	  for index, project in var.project_objects:
+# 	  project.name => project
+# 	}
+#   name = each.value.name
+#   location = each.value.location
+#   parent_id = azapi_resource.devcenter.id
+#   body = jsonencode({
+#     properties = {
+#       description = each.value.description
+#       devCenterId = azapi_resource.devcenter.id
+#       maxDevBoxesPerUser = each.value.maxDevBoxes
+#     }
+#   })
+#   depends_on = [ azapi_resource.devcenter ]
+# }
+
+resource "azurerm_virtual_network" "devcenterVNet" {
+  name                = "devcenternetwork"
+  location            = azurerm_resource_group.devcenterRG.location
+  resource_group_name = azurerm_resource_group.devcenterRG.name
+  address_space       = ["10.0.0.0/16"]
+  dns_servers         = ["10.0.0.4", "10.0.0.5"]
+
+  subnet {
+    name           = "subnet1"
+    address_prefix = "10.0.1.0/24"
+  }
+
+  subnet {
+    name           = "subnet2"
+    address_prefix = "10.0.2.0/24"
+  }
+}
+
+resource "azapi_resource" "networkConnect" {
+  type = "Microsoft.DevCenter/networkConnections@2023-04-01"
+  name = "devcenternetconnect"
+  location = azurerm_resource_group.devcenterRG.location
+  parent_id = azurerm_resource_group.devcenterRG.id
+  body = jsonencode({
+    properties = {
+      domainJoinType = "AzureADJoin"
+      networkingResourceGroupName = "NI_terraform"
+      subnetId = azurerm_virtual_network.devcenterVNet.subnet.*.id[0]
+    }
+  })
+}
+
+resource "azapi_resource" "devcenterNetConnect" {
+  type = "Microsoft.DevCenter/devcenters/attachednetworks@2023-04-01"
+  name = "devcenterconnection"
   parent_id = azapi_resource.devcenter.id
   body = jsonencode({
     properties = {
-      description = each.value.description
-      devCenterId = azapi_resource.devcenter.id
-      maxDevBoxesPerUser = each.value.maxDevBoxes
+      networkConnectionId = azapi_resource.networkConnect.id
     }
   })
-  depends_on = [ azapi_resource.devcenter ]
 }

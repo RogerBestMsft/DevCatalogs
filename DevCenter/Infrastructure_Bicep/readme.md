@@ -1,0 +1,1 @@
+This folder is still in development to use Terraform to deploy a DevCenter with Projects.

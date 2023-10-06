@@ -23,6 +23,15 @@ $devCenter = New-AzResourceGroupDeployment -Name 'TestDelployDC' `
     -TemplateFile .\devcenter.bicep `
     -devCenterInput $devCenterInput
 
+$devCenter = New-AzResourceGroupDeploymentStack -Name 'StackDelployDC' `
+    -ResourceGroupName $devCenterInput.resourceGroupName `
+    -Debug `
+    -Force `
+    -TemplateFile .\devcenter.bicep `
+    -TemplateParameterObject $devCenterInput `
+    -DenySettingsMode "none"
+
+#az stack group create --name "StackDeployAlpha" --resource-group $devCenterInput.resourceGroupName --template-file deploy.bicep --parameters devCenterInput=$devCenterInput --deny-settings-mode None
 
 
 foreach ($project in $projects) {
