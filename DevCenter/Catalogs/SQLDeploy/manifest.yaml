@@ -16,5 +16,5 @@ parameters:
 
 - id: "administratorLoginPassword"
   name: "administratorLoginPassword"
-  type: "securestring"
+  type: "string"
   required: true
