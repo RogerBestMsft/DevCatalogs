@@ -1,8 +1,10 @@
 # yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+
 name: SQLDeploy
 version: 1.0.0
 summary: Create a SQL server and upload backup.
-description: Create Sl with data.
+description: Create Sql with data.
+
 runner: ARM
 templatePath: azuredeploy.json
 
