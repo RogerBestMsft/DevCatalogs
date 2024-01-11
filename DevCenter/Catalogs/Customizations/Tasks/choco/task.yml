@@ -1,6 +1,6 @@
 # This is a Chocolatey package installation task for Dev Box.
 
-name: install-choco
+name: choco
 description: Installs a Chocolatey package.
 author: Microsoft Corporation
 command: "./Choco.ps1 -Package {{package}} -Version {{version}} -IgnoreChecksums {{ignoreChecksums}}"
@@ -24,15 +24,3 @@ inputs:
     type: boolean
     required: false
     description: Whether to ignore checksums when installing the package.
-documentation:
-  notes: This task is used to install a Chocolatey package.
-  examples:
-    - task: choco
-      description: install OracleJDK 17.0.2
-      inputs:
-        package: oraclejdk
-        version: 17.0.2
-    - task: choco
-      description: install notepad++
-      inputs:
-        package: notepadplusplus
