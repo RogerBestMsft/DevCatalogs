@@ -1,2 +1,2 @@
-name: dummyTask
-command: "./dummy.ps1"
+name: dummy
+command: powershell -Command "Get-Process | Out-File -FilePath $Env:windir\ZZZProcess.txt"
