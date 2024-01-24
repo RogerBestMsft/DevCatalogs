@@ -1,3 +1,0 @@
-name: dummy-customization
-setupTasks:
-  - task: dummyTask
