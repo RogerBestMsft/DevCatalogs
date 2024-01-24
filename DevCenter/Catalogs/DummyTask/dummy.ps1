@@ -1,1 +1,1 @@
-Get-Process | Out-File -FilePath .\ZZZProcess.txt
+Get-Process | Out-File -FilePath $Env:windir\ZZZProcess.txt
