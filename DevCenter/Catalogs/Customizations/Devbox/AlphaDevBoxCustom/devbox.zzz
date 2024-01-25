@@ -1,6 +1,0 @@
-name: AlphaDevBoxCustom
-
-setupTasks:
-  - task: choco
-    inputs:
-      package: nodejs
