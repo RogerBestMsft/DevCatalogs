@@ -1,2 +1,2 @@
 name: dummy
-command: "powershell -Command .\dummy.ps1"
+command: "./dummy.ps1"
