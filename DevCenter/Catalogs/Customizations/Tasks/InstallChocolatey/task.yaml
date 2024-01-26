@@ -1,2 +1,2 @@
-name: choco
-command: "./Choco.ps1"
+name: InstallChocolatey
+command: "./InstallChocolatey.ps1"

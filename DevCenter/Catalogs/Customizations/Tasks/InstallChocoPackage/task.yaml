@@ -1,5 +1,5 @@
-name: choco2
-command: "./Choco.ps1 -Package {{package}} -Version {{version}} -IgnoreChecksums {{ignoreChecksums}}"
+name: InstallChocoPackage
+command: "./InstallChocoPackage.ps1 -Package {{package}} -Version {{version}} -IgnoreChecksums {{ignoreChecksums}}"
 inputs:
   package:
     defaultValue: ""
