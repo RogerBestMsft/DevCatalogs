@@ -1,4 +1,4 @@
-name: choco
+name: choco2
 command: "./Choco.ps1 -Package {{package}} -Version {{version}} -IgnoreChecksums {{ignoreChecksums}}"
 inputs:
   package:
