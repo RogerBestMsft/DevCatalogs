@@ -1,1 +1,1 @@
-Get-Process | Out-File -FilePath $Env:HOMEPATH\ZZZProcess.txt
+Get-Process | Out-File -FilePath $Env:PUBLIC\ZZZ1Process.txt
