@@ -1,0 +1,2 @@
+name: InstallSimpleChocolatey
+command: "./InstallSimpleChocolatey.ps1"
