@@ -1,2 +1,2 @@
 # DevCatalogs
-Testing Development Catalogs
+A test environment for testing DevCenters.  
