@@ -1,1 +1,0 @@
-Get-Process | Out-File -FilePath "C:\Users\Public\DEFProcess.txt"
