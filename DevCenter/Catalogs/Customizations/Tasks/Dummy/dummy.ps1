@@ -1,2 +1,2 @@
-Get-Process | Out-File -FilePath $Env:PUBLIC\ZZZ1Process.txt
-(New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1') | Out-File -FilePath $Env:PUBLIC\choco.txt
+Get-Process | Out-File -FilePath $Env:PUBLIC\ABCProcess.txt
+#(New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1') | Out-File -FilePath $Env:PUBLIC\installchoco.ps1
