@@ -59,7 +59,7 @@ try {
 if ($LastExitCode -eq 3010)
 {
     Write-Host 'The recent changes indicate a reboot is necessary. Please reboot at your earliest convenience.'
-    Restart-Computer -Force
+    #Restart-Computer -Force
 }
 
 Write-Host "`nChocolatey was installed successfully.`n"
