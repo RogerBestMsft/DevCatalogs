@@ -1,0 +1,6 @@
+name: customimagetest-customization
+image: /subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/TreyResearch_Development/providers/Microsoft.DevCenter/devcenters/TRDevCenterCustomized/galleries/TreyResearchGallery/images/VSWithChoco
+hostInformation: general_i_8c32gb256ssd_v2
+supportsHibernation: true
+setupTasks:
+  - task: basictest
