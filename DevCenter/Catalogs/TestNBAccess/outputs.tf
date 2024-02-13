@@ -3,5 +3,5 @@
 # }
 
 output "checkrg_output" {
-    value = terraform_data.checktoken.output
+    value = null_resource.checktoken
 }

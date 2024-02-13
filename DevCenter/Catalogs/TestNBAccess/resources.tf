@@ -12,8 +12,9 @@ resource "random_integer" "ResourceSuffix" {
 	max						= 99999
 }
 
-resource "terraform_data" "checktoken" {
+resource "null_resource" "checktoken" {
   provisioner "local-exec" {
-    command = "./DevCenter/Catalogs/TestNBAccess/CheckToken.sh"
+    command = "./CheckToken.sh"
+    interpreter = ["/bin/bash", "-c"]
   }
 }
