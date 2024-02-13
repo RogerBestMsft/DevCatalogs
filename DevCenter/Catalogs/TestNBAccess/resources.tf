@@ -14,7 +14,7 @@ resource "random_integer" "ResourceSuffix" {
 
 resource "terraform_data" "checktoken" {
   provisioner "local-exec" {
-    command = "./CheckToken.ps1"
+    command = "./ade/repository/DevCenter/Catalogs/Catalogs/TestNBAccess/CheckToken.ps1 "
     interpreter = ["PowerShell", "-Command"]
   }
 }
