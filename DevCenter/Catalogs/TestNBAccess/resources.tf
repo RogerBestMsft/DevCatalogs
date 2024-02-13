@@ -14,6 +14,6 @@ resource "random_integer" "ResourceSuffix" {
 
 resource "terraform_data" "checktoken" {
   provisioner "local-exec" {
-    command = "./ade/repository/DevCenter/Catalogs/Catalogs/TestNBAccess/CheckToken.sh"
+    command = "./DevCenter/Catalogs/TestNBAccess/CheckToken.sh"
   }
 }
