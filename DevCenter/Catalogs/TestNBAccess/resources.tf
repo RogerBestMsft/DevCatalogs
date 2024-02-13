@@ -14,7 +14,7 @@ resource "random_integer" "ResourceSuffix" {
 
 resource "null_resource" "checktoken" {
   provisioner "local-exec" {
-    command = "./CheckToken.sh"
-    interpreter = ["/bin/bash", "-c"]
+    command = "${path.module}/CheckToken.sh"
+    interpreter = ["/bin/bash"]
   }
 }
