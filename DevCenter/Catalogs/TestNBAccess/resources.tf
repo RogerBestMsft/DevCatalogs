@@ -19,7 +19,7 @@ resource "null_resource" "checktoken" {
   }
   lifecycle {
     postcondition {
-      condition     = true
+      condition     = false
       error_message = "Custom Error: Test"
     }
   }
