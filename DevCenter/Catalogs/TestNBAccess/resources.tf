@@ -16,13 +16,7 @@ resource "random_integer" "ResourceSuffix" {
 
 resource "null_resource" "checktoken" {
   provisioner "local-exec" {
-    command = "${path.module}/CheckToken.sh"
+    command = "az account get-access-token --query accessToken -o tsv"
     interpreter = ["/bin/bash"]
-  }
-  lifecycle {
-    postcondition {
-      condition     = local.testvalue == "blue"
-      error_message = "Custom Error RBEST"
-    }
   }
 }
