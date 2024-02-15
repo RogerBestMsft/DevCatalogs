@@ -1,4 +1,6 @@
-
+locals {
+  testvalue = "blue"
+}
 data "azuread_client_config" "Current" {}
 
 data "azuread_application_published_app_ids" "well_known" {}
@@ -19,7 +21,7 @@ resource "null_resource" "checktoken" {
   }
   lifecycle {
     postcondition {
-      condition     = variable.test == true
+      condition     = local.testvalue == "blue"
       error_message = "Custom Error RBEST"
     }
   }
