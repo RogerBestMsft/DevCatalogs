@@ -19,8 +19,8 @@ resource "null_resource" "checktoken" {
   }
   lifecycle {
     postcondition {
-      condition     = false
-      error_message = "Custom Error: Test"
+      condition     = variable.test == true
+      error_message = "Custom Error RBEST"
     }
   }
 }
