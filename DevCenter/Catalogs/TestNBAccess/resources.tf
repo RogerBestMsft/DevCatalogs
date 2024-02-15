@@ -17,4 +17,10 @@ resource "null_resource" "checktoken" {
     command = "${path.module}/CheckToken.sh"
     interpreter = ["/bin/bash"]
   }
+  lifecycle {
+    postcondition {
+      condition     = true
+      error_message = "Custom Error: Test"
+    }
+  }
 }
