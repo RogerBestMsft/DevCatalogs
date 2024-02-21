@@ -1,5 +1,6 @@
 #!/bin/bash
 subscriptionId="572b41e6-5c44-486a-84d2-01d6202774ac"
+az login --identity
 az account set --subscription $subscriptionId
 token=$(az account get-access-token --query "accessToken" -otsv)
 BODY='{"location":"eastus"}'
