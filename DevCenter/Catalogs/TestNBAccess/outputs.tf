@@ -1,3 +1,3 @@
-output "checkrg_output" {
-    value = data.external.checktoken
-}
+# output "checkrg_output" {
+#     value = null_resource.checktoken
+# }
