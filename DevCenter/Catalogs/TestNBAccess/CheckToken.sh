@@ -7,4 +7,4 @@ BODY='{"location":"eastus"}'
 echo $(lsb_release -a)
 
 #echo $(dpkg -l)
-#curl -X PUT -H "Authorization: Bearer $token" -H "Content-Type: application/json" -d "$BODY" https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/CharlieCharlie?api-version=2020-01-01
+curl -X PUT -H "Authorization: Bearer $token" -H "Content-Type: application/json" -d "$BODY" https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/CharlieCharlie?api-version=2020-01-01
