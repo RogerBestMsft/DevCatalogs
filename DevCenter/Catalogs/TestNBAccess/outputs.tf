@@ -1,3 +1,3 @@
 output "checkrg_output" {
-    value = null_resource.checktoken
+    value = data.external.checktoken
 }
