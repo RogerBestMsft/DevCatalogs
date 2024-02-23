@@ -1,7 +1,4 @@
 
-resource "null_resource" "checktoken" {
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash"]
-    command = "${path.module}/CheckToken.sh"
-  }
+data "external" "checktoken" {
+    program = ["bash", "${path.root}/CheckToken.sh"]
 }
