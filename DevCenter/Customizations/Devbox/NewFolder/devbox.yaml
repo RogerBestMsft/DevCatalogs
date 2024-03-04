@@ -1,0 +1,7 @@
+name: newfolder-customization
+setupTasks:
+  - task: powershell-run-as-user
+    inputs:
+    commands: |
+      New-Item -Path "C:\Projects" -ItemType Directory
+    runAsUser: true 
