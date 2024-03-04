@@ -1,2 +1,3 @@
 name: NewFolder
-command: "./NewFolder.ps1"
+command: |
+  New-Item -Path "C:\ProjectsA" -ItemType Directory
