@@ -1,4 +1,4 @@
 name: testfolder2
 command: |
-  New-Item -Path "C:\Projects" -ItemType Directory
+  New-Item -Path "C:\Projects" -ItemType Directory | Out-Null
 runAsUser: true
