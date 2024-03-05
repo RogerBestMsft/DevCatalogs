@@ -1,1 +1,1 @@
-New-Item -Path "C:\Projects" -ItemType Directory
+New-Item -Path "C:\Projects" -ItemType Directory | Out-Null
