@@ -1,3 +1,3 @@
-name: TestFolder
-command: './NewFolder.ps1'
+name: testfolder
+command: './newnolder.ps1'
   
