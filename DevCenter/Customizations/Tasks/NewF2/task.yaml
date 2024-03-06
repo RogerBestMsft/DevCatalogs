@@ -1,3 +1,2 @@
 name: testfolder2
 command: 'New-Item -Path "C:\Projects" -ItemType Directory'
-runAsUser: true

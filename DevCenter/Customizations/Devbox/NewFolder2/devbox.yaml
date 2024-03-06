@@ -4,3 +4,4 @@ hostInformation: general_i_8c32gb256ssd_v2
 supportsHibernation: true
 setupTasks:
   - task: testfolder2
+    runAsUser: true
