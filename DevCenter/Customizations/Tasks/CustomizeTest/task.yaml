@@ -1,0 +1,2 @@
+name: CustomizeTest
+command: './CustomizeTest.ps1'  
