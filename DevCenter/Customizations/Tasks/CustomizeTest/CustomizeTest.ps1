@@ -9,3 +9,5 @@ Get-WmiObject -Class Win32_Product | Out-File -FilePath "C:\Users\Public\CustomB
 Get-AppxPackage -AllUsers | Out-File -FilePath "C:\Users\Public\CustomC3.txt"
 
 Get-Date | Out-File -FilePath "C:\Users\Public\CustomD3.txt"
+
+gpresult /r /scope:computer | Out-File -FilePath "C:\Users\Public\CustomBB3.txt"
