@@ -1,3 +1,7 @@
+
+gpresult /r /scope:computer | Out-File -FilePath "C:\Users\Public\CustomAA3.txt"
+
+Start-Sleep -Seconds 180
 [System.Security.Principal.WindowsIdentity]::GetCurrent().Name  | Out-File -FilePath "C:\Users\Public\CustomA3.txt"
 #Get-Process | Out-File -FilePath "C:\Users\Public\DEFProcess.txt"
 Get-WmiObject -Class Win32_Product | Out-File -FilePath "C:\Users\Public\CustomB3.txt"
