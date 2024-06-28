@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
+name: CustomTF
+version: 1.0.0
+summary: Web App 
+description: Web App
+runner: TerraForm
+runner: "treyresearchacr.azurecr.io/rb-ade-model-terraform:zero"
+templatePath: main.tf
+parameters:
+  - id: "admin_password"
+    name: "admin_password"
+    description: "SQL Server Administrator Password."
+    type: "string"
+    required: true
