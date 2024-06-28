@@ -6,9 +6,3 @@ description: Web App
 runner: TerraForm
 runner: "treyresearchacr.azurecr.io/rb-ade-model-terraform:zero"
 templatePath: main.tf
-parameters:
-  - id: "admin_password"
-    name: "admin_password"
-    description: "SQL Server Administrator Password."
-    type: "string"
-    required: true
