@@ -1,8 +1,7 @@
 # yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
-
 name: TFSqlServer
 version: 1.0.0
-summary: Test all parameter types
-description: Test parameters
-runner: ARM
-templatePath: azuredeploy.json
+summary: Terraform SQL Server
+description: Terraform SQL Server
+runner: TerraForm
+templatePath: main.tf
