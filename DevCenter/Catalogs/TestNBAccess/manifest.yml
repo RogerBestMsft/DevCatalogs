@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
 name: TestNBAccess
 version: 1.0.0
-summary: Test NB
-description: Test NB
+summary: Web App 
+description: Web App
 runner: "treyresearchacr.azurecr.io/rb-ade-model-terraform:zero"
-templatePath: main.tf  
+templatePath: main.tf
