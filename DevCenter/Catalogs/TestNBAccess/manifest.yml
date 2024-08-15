@@ -3,5 +3,5 @@ name: TestNBAccess
 version: 1.0.0
 summary: Test NB
 description: Test NB
-runner: TerraForm
+runner: "treyresearchacr.azurecr.io/rb-ade-model-terraform:zero"
 templatePath: main.tf  
