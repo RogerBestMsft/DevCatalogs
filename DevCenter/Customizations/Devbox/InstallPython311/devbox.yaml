@@ -1,10 +1,8 @@
-name: devbox-python311
-image: MicrosoftVisualStudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
-hostInformation: general_i_8c32gb256ssd_v2
-supportsHibernation: true
-setupTasks:
-  - task: InstallChocolatey
-  - task: InstallChocoPackage
-    inputs:
+$schema: "1.0"
+name: devbox-python311-customization
+Tasks:
+  - name: InstallChocolatey
+  - name: InstallChocoPackage
+    parameters:
       package: python3
       version: 3.11.0
