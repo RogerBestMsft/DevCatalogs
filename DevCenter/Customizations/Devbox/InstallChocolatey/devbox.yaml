@@ -1,4 +1,4 @@
 $schema: "1.0"
 name: devbox-chocolatey
 tasks:
-  - task: InstallChocolatey
+  - name: InstallChocolatey
