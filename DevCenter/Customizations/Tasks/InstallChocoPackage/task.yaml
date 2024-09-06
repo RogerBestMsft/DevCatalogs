@@ -1,3 +1,4 @@
+$schema: "1.0"
 name: InstallChocoPackage
 command: "./InstallChocoPackage.ps1 -Package {{package}} -Version {{version}} -IgnoreChecksums {{ignoreChecksums}}"
 inputs:
