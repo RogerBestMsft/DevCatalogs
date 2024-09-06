@@ -1,2 +1,2 @@
-name: testfolder2
+name: NewFolderInline
 command: 'New-Item -Path "C:\Projects" -ItemType Directory'
