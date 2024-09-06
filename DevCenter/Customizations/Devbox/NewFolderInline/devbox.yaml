@@ -1,0 +1,4 @@
+$schema: "1.0"
+name: "newfolder-inline-customization"
+tasks:
+  - name: newfolderinline
