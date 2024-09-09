@@ -1,0 +1,7 @@
+$schema: "1.0"
+name: devbox-basictest-imagedev
+image: MicrosoftWindowsDesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365
+hostInformation: general_i_8c32gb256ssd_v2
+supportsHibernation: true
+tasks:
+    - name: basictest
