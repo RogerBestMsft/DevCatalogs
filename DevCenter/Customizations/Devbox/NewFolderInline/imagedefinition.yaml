@@ -2,4 +2,3 @@ name: newfolder-inline-imagedef
 image: MicrosoftVisualStudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
 tasks:
   - name: newfolderinline
-    runAsUser: true
