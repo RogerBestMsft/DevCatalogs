@@ -1,2 +1,2 @@
 $PSVersionTable.PSVersion
-New-Item -Path "C:\Projects" -ItemType Directory
+New-Item -Path "C:\ProjectsMain" -ItemType Directory
