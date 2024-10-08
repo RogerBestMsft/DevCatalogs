@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=https://github.com/Azure/deployment-environments/releases/download/2022-11-11-preview/manifest.schema.json
 name: TFSqlServer
 version: 1.0.0
-summary: Terraform SQL Server
-description: Terraform SQL Server
-runner: TerraForm
-templatePath: main.tf
+summary: Create a SQL server and upload backup.
+description: Create Sql with data.
+
+runner: ARM
+templatePath: azuredeploy.json
