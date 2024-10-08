@@ -1,0 +1,4 @@
+$schema: "1.0"
+name: "devbox-customimagetest"
+tasks:
+  - name: basictest
