@@ -4,9 +4,9 @@ project_object = [{
     resourcegroup = "VanArsdelLTDAGAlphaRG"
     location = "eastus"
     identity = "SystemAssigned"
-    subscriptionId = "572b41e6-5c44-486a-84d2-01d6202774ac"
+    subscriptionId = "<SubID>"
     devboxLimits = 0
-    devCenterId = "/subscriptions/572b41e6-5c44-486a-84d2-01d6202774ac/resourceGroups/VanArsdelLTDAGRG/providers/Microsoft.DevCenter/devcenters/VanArsdelLTDAG"
+    devCenterId = "<DCID>"
     environmentTypes = [{
         type = "Dev"
         systemId = true
@@ -16,7 +16,7 @@ project_object = [{
 
 # project_environmentTypes = [{
 #     type = "Dev"
-#     subscriptionId = "572b41e6-5c44-486a-84d2-01d6202774ac"
+#     subscriptionId = "<SubID>"
 #     systemId = true
 #     roles = "Contributor"
 # }]
