@@ -1,6 +1,0 @@
-name: UbuntuVMPrivateDCNet
-version: 1.0.0
-summary: Ubuntu VM for front end development
-description: Deploys an Ubuntu 20 vm
-runner: ARM
-templatePath: azuredeploy.json

@@ -1,8 +1,0 @@
-$schema: "1.0"
-name: devbox-python311-customization
-Tasks:
-  - name: InstallChocolatey
-  - name: InstallChocoPackage
-    parameters:
-      package: python3
-      version: 3.11.0

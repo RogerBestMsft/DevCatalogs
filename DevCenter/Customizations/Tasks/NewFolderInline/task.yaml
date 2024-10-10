@@ -1,3 +1,0 @@
-$schema: "1.0"
-name: NewFolderInline
-command: 'New-Item -Path "C:\Projects" -ItemType Directory'

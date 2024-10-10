@@ -1,4 +1,0 @@
-$schema: "1.0"
-name: "newfolder-customization"
-tasks:
-  - name: testfolder
