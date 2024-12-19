@@ -3,5 +3,5 @@ name: CustomTF
 version: 1.0.0
 summary: Web App 
 description: Web App
-runner: "treyresearchacr.azurecr.io/rb-ade-model-terraform:zero"
-templatePath: main.tf
+runner: ARM
+templatePath: azuredeploy.json
