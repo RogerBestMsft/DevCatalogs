@@ -1,0 +1,7 @@
+$schema: "1.0"
+name: "testSTS"
+image: "microsoftwindowsdesktop_windows-ent-cpc_win11-24H2-ent-cpc"
+tasks:
+  - name: choco
+    parameters:
+      package: springtoolsuite
