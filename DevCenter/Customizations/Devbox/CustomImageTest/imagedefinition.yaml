@@ -3,4 +3,4 @@ name: customimagetest-customization
 image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
 description: "Test team customization"
 tasks:
-    - name: CustomizeTest
+    - name: basictest
