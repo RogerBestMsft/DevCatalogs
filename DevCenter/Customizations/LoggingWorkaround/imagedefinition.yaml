@@ -1,0 +1,23 @@
+$schema: "1.0"
+name: "loggingworkaround-customization"
+image: " microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2"
+tasks:
+  - name: ~/powershell
+    parameters:
+      script: |
+        # PowerShell script to implement logging workaround
+        # Get computer name
+        $CompName = $env:COMPUTERNAME
+        # Add your PowerShell commands here
+        Write-Output "Logging workaround completed."
+        $logName = "Application"
+        $source = "RBEST"
+        $eventID = 1000
+        $entryType = [System.Diagnostics.EventLogEntryType]::Information
+        $message = "This is an informational message from RBEST. $CompName"
+        # Create the event source if it doesn't exist
+        if (-not [System.Diagnostics.EventLog]::SourceExists($source)) {
+            [System.Diagnostics.EventLog]::CreateEventSource($source, $logName)
+        }
+        # Write the event to the log
+        Write-EventLog -LogName $logName -Source $source -EventID $eventID -EntryType $entryType -Message $message
