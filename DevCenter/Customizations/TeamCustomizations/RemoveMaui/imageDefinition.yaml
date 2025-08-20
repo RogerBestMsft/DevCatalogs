@@ -1,0 +1,86 @@
+$schema: "1.0"
+name: "remove-maui-workloads"
+image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
+tasks:
+  - name: powershell
+    description: Identify and remove all MAUI workloads using Visual Studio Installer CLI
+    parameters:
+      command: |
+        # Script to remove MAUI workloads from Visual Studio installations
+        Write-Host "Starting MAUI workload removal process..."
+        
+        # Define MAUI-related workload IDs
+        $mauiWorkloads = @(
+            "Microsoft.VisualStudio.Workload.NetCrossPlat",
+            "Microsoft.VisualStudio.Component.MonoDebugger",
+            "Microsoft.VisualStudio.ComponentGroup.Maui.All",
+            "Microsoft.VisualStudio.ComponentGroup.Maui.Blazor",
+            "Microsoft.VisualStudio.ComponentGroup.Maui.Windows",
+            "Microsoft.VisualStudio.ComponentGroup.Maui.Android",
+            "Microsoft.VisualStudio.ComponentGroup.Maui.iOS",
+            "Microsoft.VisualStudio.ComponentGroup.Maui.MacCatalyst",
+            "Microsoft.Component.NetFX.Native",
+            "Microsoft.VisualStudio.Component.Graphics.Tools"
+        )
+        
+        # Find Visual Studio Installer
+        $vsWherePath = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+        if (-not (Test-Path $vsWherePath)) {
+            Write-Host "Visual Studio Installer not found at expected location" -ForegroundColor Red
+            exit 1
+        }
+        
+        # Get all Visual Studio installations
+        $installations = & $vsWherePath -latest -products * -format json | ConvertFrom-Json
+        
+        if (-not $installations) {
+            Write-Host "No Visual Studio installations found" -ForegroundColor Yellow
+            exit 0
+        }
+        
+        foreach ($installation in $installations) {
+            Write-Host "Processing Visual Studio installation: $($installation.displayName)" -ForegroundColor Green
+            Write-Host "Installation path: $($installation.installationPath)" -ForegroundColor Gray
+            
+            # Get installed packages for this installation
+            $installedPackages = & $vsWherePath -property packages -format json | ConvertFrom-Json
+            
+            # Check which MAUI workloads are installed
+            $installedMauiWorkloads = @()
+            foreach ($workload in $mauiWorkloads) {
+                if ($installation.packages -contains $workload) {
+                    $installedMauiWorkloads += $workload
+                    Write-Host "Found MAUI workload: $workload" -ForegroundColor Yellow
+                }
+            }
+            
+            if ($installedMauiWorkloads.Count -eq 0) {
+                Write-Host "No MAUI workloads found in this installation" -ForegroundColor Green
+                continue
+            }
+            
+            # Build modify command to remove MAUI workloads
+            $vsInstallerPath = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
+            $removeArgs = @("modify", "--installPath", $installation.installationPath, "--quiet", "--wait")
+            
+            foreach ($workload in $installedMauiWorkloads) {
+                $removeArgs += "--remove"
+                $removeArgs += $workload
+            }
+            
+            Write-Host "Removing MAUI workloads from installation..." -ForegroundColor Cyan
+            Write-Host "Command: $vsInstallerPath $($removeArgs -join ' ')" -ForegroundColor Gray
+            
+            try {
+                $process = Start-Process -FilePath $vsInstallerPath -ArgumentList $removeArgs -Wait -PassThru -NoNewWindow
+                if ($process.ExitCode -eq 0) {
+                    Write-Host "Successfully removed MAUI workloads from installation" -ForegroundColor Green
+                } else {
+                    Write-Host "Failed to remove MAUI workloads. Exit code: $($process.ExitCode)" -ForegroundColor Red
+                }
+            } catch {
+                Write-Host "Error running Visual Studio Installer: $($_.Exception.Message)" -ForegroundColor Red
+            }
+        }
+        
+        Write-Host "MAUI workload removal process completed" -ForegroundColor Green
