@@ -4,7 +4,6 @@ image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m36
 tasks:
   - name: powershell
     description: Identify and remove all MAUI workloads using Visual Studio Installer CLI
-    runElevated: true
     parameters:
       command: |
         # Script to remove MAUI workloads from Visual Studio installations
