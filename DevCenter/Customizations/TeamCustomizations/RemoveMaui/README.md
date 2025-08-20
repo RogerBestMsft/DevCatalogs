@@ -19,10 +19,15 @@ This customization identifies and removes the following MAUI-related workloads a
 
 ## How it works
 
-1. **Discovery**: Uses `vswhere.exe` to find all Visual Studio installations
-2. **Identification**: Checks each installation for MAUI workloads
-3. **Removal**: Uses the Visual Studio Installer CLI to remove identified MAUI workloads
-4. **Logging**: Provides detailed output about the removal process
+1. **Elevation**: The task runs with `runElevated: true` to ensure proper permissions for Visual Studio modification
+2. **Discovery**: Uses `vswhere.exe` to find all Visual Studio installations
+3. **Identification**: Checks each installation for MAUI workloads using the `-requires` parameter
+4. **Removal**: Uses the Visual Studio Installer CLI to remove identified MAUI workloads
+5. **Logging**: Provides detailed output about the removal process
+
+## Elevation and Permissions
+
+This customization uses `runElevated: true` in the task definition to ensure it runs with the necessary administrative privileges required by the Visual Studio Installer CLI. Dev Box customizations with this setting will automatically run in an elevated context.
 
 ## Base Image
 
