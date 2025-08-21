@@ -54,15 +54,25 @@ tasks:
             Write-Host "Checking for installed MAUI workloads using VS Installer..." -ForegroundColor Gray
             $vsInstallerPath = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
             
-            # Check if any MAUI workloads are installed by attempting to remove them (dry run approach)
+            # Check if any MAUI workloads are installed in this specific installation
             $installedMauiWorkloads = @()
-            foreach ($workload in $mauiWorkloads) {
-                # Use vswhere to check if this specific workload is installed
-                $checkResult = & $vsWherePath -all -products * -requires $workload
-                if ($checkResult) {
-                    $installedMauiWorkloads += $workload
-                    Write-Host "Found MAUI workload: $workload" -ForegroundColor Yellow
+            
+            # Get the packages/components installed in this specific installation
+            $installedPackages = & $vsWherePath -instanceId $installation.instanceId -property packages
+            
+            if ($installedPackages) {
+                # Convert to array and clean up
+                $packagesArray = $installedPackages -split "`r?`n" | Where-Object { $_ -ne "" }
+                Write-Host "Found $($packagesArray.Count) packages in this installation" -ForegroundColor Gray
+                
+                foreach ($workload in $mauiWorkloads) {
+                    if ($packagesArray -contains $workload) {
+                        $installedMauiWorkloads += $workload
+                        Write-Host "Found MAUI workload: $workload" -ForegroundColor Yellow
+                    }
                 }
+            } else {
+                Write-Host "No packages information available for this installation" -ForegroundColor Gray
             }
             
             if ($installedMauiWorkloads.Count -eq 0) {
@@ -70,43 +80,42 @@ tasks:
                 continue
             }
             
-            # Build modify command to remove MAUI workloads
-            $removeArgs = @("modify", "--installPath", $installation.installationPath, "--quiet")
+            Write-Host "Found $($installedMauiWorkloads.Count) MAUI workloads to remove" -ForegroundColor Yellow
             
+            # Remove each MAUI workload individually
             foreach ($workload in $installedMauiWorkloads) {
-                $removeArgs += "--remove"
-                $removeArgs += $workload
-            }
-            
-            Write-Host "Removing MAUI workloads from installation..." -ForegroundColor Cyan
-            Write-Host "Command: $vsInstallerPath $($removeArgs -join ' ')" -ForegroundColor Gray
-            
-            try {
-                # Run VS Installer (already in elevated context)
-                Write-Host "Executing Visual Studio Installer..." -ForegroundColor Cyan
-                $process = Start-Process -FilePath $vsInstallerPath -ArgumentList $removeArgs -Wait -PassThru -WindowStyle Hidden
+                Write-Host "Removing workload: $workload" -ForegroundColor Cyan
                 
-                if ($process.ExitCode -eq 0) {
-                    Write-Host "Successfully removed MAUI workloads from installation" -ForegroundColor Green
-                } elseif ($process.ExitCode -eq 5007) {
-                    Write-Host "Elevation issue detected. Retrying without --quiet flag..." -ForegroundColor Yellow
-                    # Try without --quiet for better compatibility
-                    $removeArgsInteractive = @("modify", "--installPath", $installation.installationPath)
-                    foreach ($workload in $installedMauiWorkloads) {
-                        $removeArgsInteractive += "--remove"
-                        $removeArgsInteractive += $workload
-                    }
-                    $processInteractive = Start-Process -FilePath $vsInstallerPath -ArgumentList $removeArgsInteractive -Wait -PassThru -WindowStyle Hidden
-                    if ($processInteractive.ExitCode -eq 0) {
-                        Write-Host "Successfully removed MAUI workloads from installation" -ForegroundColor Green
+                # Build modify command for individual workload removal
+                $removeArgs = @("modify", "--installPath", $installation.installationPath, "--quiet", "--remove", $workload)
+                
+                Write-Host "Command: $vsInstallerPath $($removeArgs -join ' ')" -ForegroundColor Gray
+                
+                try {
+                    # Run VS Installer for individual workload (already in elevated context)
+                    $process = Start-Process -FilePath $vsInstallerPath -ArgumentList $removeArgs -Wait -PassThru -WindowStyle Hidden
+                    
+                    if ($process.ExitCode -eq 0) {
+                        Write-Host "Successfully removed workload: $workload" -ForegroundColor Green
+                    } elseif ($process.ExitCode -eq 5007) {
+                        Write-Host "Elevation issue detected for $workload. Retrying without --quiet flag..." -ForegroundColor Yellow
+                        # Try without --quiet for better compatibility
+                        $removeArgsInteractive = @("modify", "--installPath", $installation.installationPath, "--remove", $workload)
+                        $processInteractive = Start-Process -FilePath $vsInstallerPath -ArgumentList $removeArgsInteractive -Wait -PassThru -WindowStyle Hidden
+                        if ($processInteractive.ExitCode -eq 0) {
+                            Write-Host "Successfully removed workload: $workload" -ForegroundColor Green
+                        } else {
+                            Write-Host "Failed to remove workload: $workload. Exit code: $($processInteractive.ExitCode)" -ForegroundColor Red
+                        }
                     } else {
-                        Write-Host "Failed to remove MAUI workloads. Exit code: $($processInteractive.ExitCode)" -ForegroundColor Red
+                        Write-Host "Failed to remove workload: $workload. Exit code: $($process.ExitCode)" -ForegroundColor Red
                     }
-                } else {
-                    Write-Host "Failed to remove MAUI workloads. Exit code: $($process.ExitCode)" -ForegroundColor Red
+                } catch {
+                    Write-Host "Error removing workload $workload`: $($_.Exception.Message)" -ForegroundColor Red
                 }
-            } catch {
-                Write-Host "Error running Visual Studio Installer: $($_.Exception.Message)" -ForegroundColor Red
+                
+                # Small delay between workload removals to avoid conflicts
+                Start-Sleep -Seconds 2
             }
         }
         
