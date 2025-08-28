@@ -6,36 +6,4 @@ tasks:
     description: Identify and remove all MAUI workloads using Visual Studio Installer CLI
     parameters:
       command: |
-        $mauiWorkloads = @(
-            """Microsoft.VisualStudio.Workload.NetCrossPlat""",
-            """Microsoft.VisualStudio.Component.MonoDebugger""",
-            """Microsoft.VisualStudio.ComponentGroup.Maui.All""",
-            """Microsoft.VisualStudio.ComponentGroup.Maui.Blazor""",
-            """Microsoft.VisualStudio.ComponentGroup.Maui.Windows""",
-            """Microsoft.VisualStudio.ComponentGroup.Maui.Android""",
-            """Microsoft.VisualStudio.ComponentGroup.Maui.iOS""",
-            """Microsoft.VisualStudio.ComponentGroup.Maui.MacCatalyst""",
-            """Microsoft.Component.NetFX.Native""",
-            """Microsoft.VisualStudio.Component.Graphics.Tools"""
-        )
-
-        $VsInstallerPath = """${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"""
-        $VsPath = """C:\Program Files\Microsoft Visual Studio\2022\Enterprise""" 
-        foreach ($workload in $mauiWorkloads) {
-            $removeArgs = @("""modify""", """--installPath""", "`"$VsPath`"", """--quiet""", """--remove""", $workload)
-            $commandLine = """$VsInstallerPath $($removeArgs -join ' ')"""
-
-            try {
-                $process = Start-Process -FilePath $VsInstallerPath -ArgumentList $removeArgs -Wait -PassThru -WindowStyle Hidden
-                
-                if ($process.ExitCode -eq 0) {
-                    $successCount++
-                } elseif ($process.ExitCode -eq 1003) {
-                    $successCount++  # Count as success since it's not installed anyway
-                } 
-            } catch {
-                Write-Host """Error removing workload $workload : $($_.Exception.Message)""" -ForegroundColor Red
-            }
-            # Small delay between workload removals to avoid conflicts
-            Start-Sleep -Seconds 1
-        }            
+        & Remove-MauiWorkload.ps1
