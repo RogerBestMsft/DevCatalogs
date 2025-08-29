@@ -6,4 +6,4 @@ tasks:
     description: Identify and remove all MAUI workloads using Visual Studio Installer CLI
     parameters:
       command: |
-        & Remove-MauiWorkload.ps1
+        & """C:\ProgramData\Microsoft\DevCenter\Customizations\TeamCustomizations\RemoveMaui\Remove-MauiWorkloads.ps1"""
