@@ -6,4 +6,4 @@ tasks:
     description: Identify and remove all MAUI workloads using Visual Studio Installer CLI
     parameters:
       command: |
-        echo 'hello'
+        $x = 1
