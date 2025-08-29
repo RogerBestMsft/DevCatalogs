@@ -6,4 +6,6 @@ tasks:
     description: Identify and remove all MAUI workloads using Visual Studio Installer CLI
     parameters:
       command: |
-        $x = 1
+        $RemoveScript = """"C:\ProgramData\Microsoft\DevBoxAgent\ImageDefinitions\rbmsft-devcatalogs\remove-maui-workloads\Remove-MauiWorkloads.ps1""""
+        Start-Process -FilePath $RemoveScript -Wait -PassThru -WindowStyle Hidden
+
