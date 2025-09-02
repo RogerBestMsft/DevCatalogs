@@ -179,13 +179,13 @@ function Main {
             }
             
             # Ask for confirmation unless Force is specified
-            if (-not $Force) {
-                $response = Read-Host "`nProceed with removing MAUI workloads from $($installation.displayName)? (y/N)"
-                if ($response -notmatch '^[Yy]') {
-                    Write-ColorOutput "Skipping this installation." "Yellow"
-                    continue
-                }
-            }
+            #if (-not $Force) {
+            #    $response = Read-Host "`nProceed with removing MAUI workloads from $($installation.displayName)? (y/N)"
+            #    if ($response -notmatch '^[Yy]') {
+            #        Write-ColorOutput "Skipping this installation." "Yellow"
+            #        continue
+            #    }
+            #}
             
             # Remove all MAUI workloads
             $successCount = Remove-MauiWorkloads -Installation $installation -VsInstallerPath $vsInstallerPath
