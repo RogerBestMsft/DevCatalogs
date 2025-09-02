@@ -201,14 +201,14 @@ function Main {
         Write-ColorOutput "Total MAUI workloads processed: $totalWorkloadsProcessed" "White"
         Write-ColorOutput "Total MAUI workloads successfully processed: $totalWorkloadsSuccessful" "Green"
         
-        if ($totalWorkloadsSuccessful -lt $totalWorkloadsProcessed) {
-            $failedCount = $totalWorkloadsProcessed - $totalWorkloadsSuccessful
-            Write-ColorOutput "Some workloads failed to process ($failedCount failed). Check the output above for details." "Red"
-        } else {
-            Write-ColorOutput "All MAUI workloads were processed successfully!" "Green"
-        }
+        # if ($totalWorkloadsSuccessful -lt $totalWorkloadsProcessed) {
+        #     $failedCount = $totalWorkloadsProcessed - $totalWorkloadsSuccessful
+        #     Write-ColorOutput "Some workloads failed to process ($failedCount failed). Check the output above for details." "Red"
+        # } else {
+        #     Write-ColorOutput "All MAUI workloads were processed successfully!" "Green"
+        # }
         
-        Write-ColorOutput "MAUI workload removal process completed" "Green"
+        # Write-ColorOutput "MAUI workload removal process completed" "Green"
         
     } catch {
         Write-ColorOutput "Fatal error: $($_.Exception.Message)" "Red"
