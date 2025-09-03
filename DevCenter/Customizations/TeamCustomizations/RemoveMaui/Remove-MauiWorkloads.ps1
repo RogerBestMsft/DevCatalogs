@@ -107,27 +107,27 @@ function Remove-MauiWorkloads {
         try {
             $process = Start-Process -FilePath $VsInstallerPath -ArgumentList $removeArgs -Wait -PassThru -WindowStyle Hidden
             
-            if ($process.ExitCode -eq 0) {
-                Write-ColorOutput "Successfully removed workload: $workload" "Green"
-                $successCount++
-            } elseif ($process.ExitCode -eq 1003) {
-                Write-ColorOutput "Workload not installed: $workload (skipping)" "Gray"
-                $successCount++  # Count as success since it's not installed anyway
-            } elseif ($process.ExitCode -eq 5007) {
-                Write-ColorOutput "Elevation issue detected for $workload. Retrying without --quiet flag..." "Yellow"
-                # Try without --quiet for better compatibility
-                $removeArgsInteractive = @("modify", "--installPath", "`"$($Installation.installationPath)`"", "--remove", $workload)
-                $processInteractive = Start-Process -FilePath $VsInstallerPath -ArgumentList $removeArgsInteractive -Wait -PassThru -WindowStyle Hidden
+            # if ($process.ExitCode -eq 0) {
+            #     Write-ColorOutput "Successfully removed workload: $workload" "Green"
+            #     $successCount++
+            # } elseif ($process.ExitCode -eq 1003) {
+            #     Write-ColorOutput "Workload not installed: $workload (skipping)" "Gray"
+            #     $successCount++  # Count as success since it's not installed anyway
+            # } elseif ($process.ExitCode -eq 5007) {
+            #     Write-ColorOutput "Elevation issue detected for $workload. Retrying without --quiet flag..." "Yellow"
+            #     # Try without --quiet for better compatibility
+            #     $removeArgsInteractive = @("modify", "--installPath", "`"$($Installation.installationPath)`"", "--remove", $workload)
+            #     $processInteractive = Start-Process -FilePath $VsInstallerPath -ArgumentList $removeArgsInteractive -Wait -PassThru -WindowStyle Hidden
                 
-                if ($processInteractive.ExitCode -eq 0 -or $processInteractive.ExitCode -eq 1003) {
-                    Write-ColorOutput "Successfully processed workload: $workload" "Green"
-                    $successCount++
-                } else {
-                    Write-ColorOutput "Failed to remove workload: $workload. Exit code: $($processInteractive.ExitCode)" "Red"
-                }
-            } else {
-                Write-ColorOutput "Failed to remove workload: $workload. Exit code: $($process.ExitCode)" "Red"
-            }
+            #     if ($processInteractive.ExitCode -eq 0 -or $processInteractive.ExitCode -eq 1003) {
+            #         Write-ColorOutput "Successfully processed workload: $workload" "Green"
+            #         $successCount++
+            #     } else {
+            #         Write-ColorOutput "Failed to remove workload: $workload. Exit code: $($processInteractive.ExitCode)" "Red"
+            #     }
+            # } else {
+            #     Write-ColorOutput "Failed to remove workload: $workload. Exit code: $($process.ExitCode)" "Red"
+            # }
         } catch {
             Write-ColorOutput "Error removing workload $workload : $($_.Exception.Message)" "Red"
         }
