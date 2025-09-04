@@ -104,7 +104,7 @@ function Remove-MauiWorkloads {
         Write-ColorOutput "Removing workload: $workload" "Cyan"
         Write-ColorOutput "Command: $commandLine" "Gray"
         
-        try {
+        #  try {
             $process = Start-Process -FilePath $VsInstallerPath -ArgumentList $removeArgs -Wait -PassThru -WindowStyle Hidden
             
             # if ($process.ExitCode -eq 0) {
@@ -128,9 +128,9 @@ function Remove-MauiWorkloads {
             # } else {
             #     Write-ColorOutput "Failed to remove workload: $workload. Exit code: $($process.ExitCode)" "Red"
             # }
-        } catch {
-            Write-ColorOutput "Error removing workload $workload : $($_.Exception.Message)" "Red"
-        }
+        # } catch {
+        #     Write-ColorOutput "Error removing workload $workload : $($_.Exception.Message)" "Red"
+        # }
         
         # Small delay between workload removals to avoid conflicts
         Start-Sleep -Seconds 1
