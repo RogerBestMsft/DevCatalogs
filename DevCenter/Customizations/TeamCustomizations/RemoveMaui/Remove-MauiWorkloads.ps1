@@ -92,6 +92,11 @@ function Remove-MauiWorkloads {
         [string]$VsInstallerPath
     )
     
+    if (-not $VsInstallerPath -or -not (Test-Path $VsInstallerPath)) {
+        Write-ColorOutput "ERROR: Visual Studio Installer not found at path: $VsInstallerPath" "Red"
+        exit
+    }
+
     $successCount = 0
     $totalCount = $mauiWorkloads.Count
     
