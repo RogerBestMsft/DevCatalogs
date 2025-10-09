@@ -1,0 +1,12 @@
+name: WingItInfrastructure
+description: Infrastructure for WingIt application  
+templatePath: bicep\main.bicep
+parameters:
+- id: "environment"
+  type: "string"
+  defaultValue: "dev"
+  allowedValues:
+  - "dev"
+  - "test"
+  - "prod"
+runner: Bicep
