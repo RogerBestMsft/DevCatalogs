@@ -1,0 +1,17 @@
+{
+    "subscriptionId": "REPLACE-WITH-YOUR-SUBSCRIPTION-ID",
+    "solutionName": "wingit-dev",
+    "location": "UK South",
+    "redis": {
+        "sku": {
+            "name": "Basic",
+            "family": "C",
+            "capacity": 0
+        }
+    },
+    "networking": {
+        "enablePrivateEndpoints": false,
+        "enablePrivateAccessOnly": false,
+        "enableFunctionsVNetIntegration": false
+    }
+}

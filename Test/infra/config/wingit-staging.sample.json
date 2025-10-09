@@ -1,0 +1,17 @@
+{
+    "subscriptionId": "REPLACE-WITH-YOUR-SUBSCRIPTION-ID",
+    "solutionName": "wingit-staging",
+    "location": "UK South",
+    "redis": {
+        "sku": {
+            "name": "Standard",
+            "family": "C",
+            "capacity": 1
+        }
+    },
+    "networking": {
+        "enablePrivateEndpoints": true,
+        "enablePrivateAccessOnly": true,
+        "enableFunctionsVNetIntegration": false
+    }
+}
