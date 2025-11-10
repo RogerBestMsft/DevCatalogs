@@ -1,0 +1,11 @@
+$schema: "1.0"
+name: TestWinGet
+description: Test WinGet source list command
+author: DevBox Team
+command: "./test_winget.ps1 -LogPath '{{ LogPath }}'"
+parameters:
+  LogPath:
+    type: string
+    description: Path to the log file for WinGet source list output
+    required: true
+    default: "C:\\temp\\winget-test.log"
