@@ -2,4 +2,4 @@ $schema: "1.0"
 name: TestWinGet
 description: Test WinGet source list command
 author: DevBox Team
-command: "./test_winget.ps1"
+command: "./testwinget.ps1"
