@@ -1,13 +1,8 @@
 $schema: "1.0"
 name: "devbox-data-analytics-ai"
 image: microsoftvisualstudio_visualstudio2019plustools_vs-2019-pro-general-win11-m365-gen2
-description: "This definition is for the testing"
-buildProperties:
-  networkConnection: "rebabvnetconn"
 tasks:
   - name: powershell
-    displayName: "Run DevBox orchestration - Install All Software"
-    timeout: 7200
     parameters:
       commands: |
         # Retrieve secrets from Azure Key Vault
