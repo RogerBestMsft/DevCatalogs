@@ -2,7 +2,7 @@ $schema: "1.0"
 name: "devbox-data-analytics-ai"
 image: microsoftvisualstudio_visualstudio2019plustools_vs-2019-pro-general-win11-m365-gen2
 tasks:
-  - name: powershell
+  - name: ~/powershell
     parameters:
       commands: |
         # Retrieve secrets from Azure Key Vault
