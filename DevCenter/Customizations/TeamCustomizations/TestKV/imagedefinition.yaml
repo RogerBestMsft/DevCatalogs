@@ -9,8 +9,8 @@ tasks:
       command: |
         # Retrieve secrets from Azure Key Vault
         $xxx = 'boo'
-        $xxx | Out-File -FilePath "C:\temp\bbb.txt"
-        $test = '{{https://rebabhgh4exvcql44e.vault.azure.net/secrets/TestSecret}}'
-        $test | Out-File -FilePath "C:\temp\aaa.txt" -Encoding UTF8
+        $xxx | Out-File -FilePath 'C:\temp\bbb.txt'
+        # $test = '{{https://rebabhgh4exvcql44e.vault.azure.net/secrets/TestSecret}}'
+        # $test | Out-File -FilePath "C:\temp\aaa.txt" -Encoding UTF8
         # Execute the DevBox orchestration script
         # & "{{workingdirectory}}/main.ps1" -TestSecret $test
