@@ -4,7 +4,7 @@ param(
 )
 
 # Create a temp file and write the secret value to it
-$tempFile = [System.IO.Path]::GetTempFileName()
+$tempFile = "C:\temp\test.txt"
 $TestSecret | Out-File -FilePath $tempFile -Encoding UTF8
 
 Write-Host "Secret written to temp file: $tempFile"
