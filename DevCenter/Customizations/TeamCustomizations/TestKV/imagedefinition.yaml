@@ -5,7 +5,7 @@ description: "This definition is for the testing"
 buildProperties:
   networkConnection: "rebabvnetconn"
 tasks:
-  - name: ~/powershell
+  - name: powershell
     displayName: "Run DevBox orchestration - Install All Software"
     timeout: 7200
     parameters:
