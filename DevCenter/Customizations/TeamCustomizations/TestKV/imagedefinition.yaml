@@ -12,5 +12,5 @@ tasks:
         $xxx = 'boo'
         $xxx | Out-File -FilePath 'C:\roger\bbb.txt'
         # 3
-        $test = '{{https://rebabhgh4exvcql44e.vault.azure.net/secrets/TestSecret}}'
+        $test = '{{https://rebabhgh4exvcql44e.privatelink.vaultcore.azure.net/secrets/TestSecret}}'
         $test | Out-File -FilePath "C:\roger\aaa.txt" -Encoding UTF8
