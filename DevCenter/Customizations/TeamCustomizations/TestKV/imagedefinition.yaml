@@ -10,7 +10,7 @@ tasks:
       command: |
         # Retrieve secrets from Azure Key Vault
         mkdir c:\roger
-        $xxx = 'boo'
+        $xxx = 'aaa'
         $xxx | Out-File -FilePath 'C:\roger\bbb.txt'
         # 3
         $test = '{{https://rebabhgh4exvcql44e.privatelink.vaultcore.azure.net/secrets/TestSecret}}'
